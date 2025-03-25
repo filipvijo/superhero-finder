@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+}
+
+body.dark {
+  color: #FA73DD;
+}
+
+body.light {
+  color: #333;
+}
+
+/* Parallax Container */
+.parallax-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+/* Header Styles */
+header {
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #ff4b5c 0%, #3b82f6 100%);
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border-bottom: 4px solid #ffd700;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  font-size: 3.5rem;
+  text-shadow: 3px 3px 0 #ffd700, 6px 6px 0 #000;
+  margin: 0;
+}
+
+/* Input and Button Styles */
+input, select, button {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+}
+
+input, select {
+  background: rgba(255, 255, 255, 0.9);
+  border: 3px solid #ffd700;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 10px #ffd700;
+  transform: scale(1.02);
+}
+
+button {
+  background: #3b82f6;
+  color: white;
+  border: 3px solid #ffd700;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ffd700;
+}
+
+button:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
+body.dark button {
+  background: #ff4b5c;
+}
+
+/* Card Styles */
+.hero-card {
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  border: 4px solid #ffd700;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+body.light .hero-card {
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+}
+
+.hero-card img {
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+}
+
+/* Tilt Effect */
+.tilt-card {
+  transition: box-shadow 0.3s;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Spinner Styles */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #FA73DD;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+body.light .spinner {
+  border-left-color: #4a90e2;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error Message */
+.error-message {
+  background: rgba(239, 68, 68, 0.9);
+  border: 3px solid #b91c1c;
+  border-radius: 8px;
+  padding: 1rem;
+  color: white;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Main Content */
+main {
+  position: relative;
+  z-index: 1;
+}
