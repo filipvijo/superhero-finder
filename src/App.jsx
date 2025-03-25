@@ -85,7 +85,7 @@ function App() {
     setSelectedHeroes([]);
     setQuizResult(null);
     try {
-      const response = await axios.get(`http://localhost:3001/search/${query}`);
+      const response = await axios.get(`https://superhero-proxy.onrender.com/search/${query}`);
       if (response.data.response === "success") {
         let filteredHeroes = response.data.results;
 
