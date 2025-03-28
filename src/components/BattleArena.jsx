@@ -113,76 +113,76 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 overflow-y-auto z-50"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.8, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.8, y: 20 }}
-        className="bg-white rounded-lg p-6 max-w-4xl w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+        className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-3xl font-bangers text-center mb-6" style={{ letterSpacing: '2px' }}>
+        <h2 className="text-2xl sm:text-3xl font-bangers text-center mb-6" style={{ letterSpacing: '2px' }}>
           BATTLE ARENA!
         </h2>
 
         {loading ? (
           <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-8 border-red-500 border-t-transparent"></div>
-            <p className="mt-4 text-2xl font-bangers text-red-500" style={{ letterSpacing: '1px' }}>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-8 border-red-500 border-t-transparent"></div>
+            <p className="mt-4 text-xl sm:text-2xl font-bangers text-red-500" style={{ letterSpacing: '1px' }}>
               BATTLE IN PROGRESS...
             </p>
           </div>
         ) : battleResult ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Hero 1 */}
               <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto">
+                <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto">
                   <img
                     src={hero1.image.url}
                     alt={hero1.name}
                     className="w-full h-full object-cover rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   />
                 </div>
-                <h3 className="mt-2 text-xl font-bangers" style={{ letterSpacing: '1px' }}>
+                <h3 className="mt-2 text-lg sm:text-xl font-bangers" style={{ letterSpacing: '1px' }}>
                   {hero1.name}
                 </h3>
               </div>
 
               {/* Hero 2 */}
               <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto">
+                <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto">
                   <img
                     src={hero2.image.url}
                     alt={hero2.name}
                     className="w-full h-full object-cover rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   />
                 </div>
-                <h3 className="mt-2 text-xl font-bangers" style={{ letterSpacing: '1px' }}>
+                <h3 className="mt-2 text-lg sm:text-xl font-bangers" style={{ letterSpacing: '1px' }}>
                   {hero2.name}
                 </h3>
               </div>
             </div>
 
-            <div className="p-6 bg-yellow-50 rounded-lg border-2 border-black">
-              <p className="font-bangers text-lg whitespace-pre-line" style={{ letterSpacing: '1px' }}>
+            <div className="p-4 sm:p-6 bg-yellow-50 rounded-lg border-2 border-black">
+              <p className="font-bangers text-base sm:text-lg whitespace-pre-line" style={{ letterSpacing: '1px' }}>
                 {battleResult}
               </p>
             </div>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button
                 onClick={resetBattle}
-                className="px-6 py-3 bg-blue-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all text-sm sm:text-base"
                 style={{ letterSpacing: '1px' }}
               >
                 NEW BATTLE
               </button>
               <button
                 onClick={onClose}
-                className="px-6 py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all text-sm sm:text-base"
                 style={{ letterSpacing: '1px' }}
               >
                 CLOSE
@@ -191,61 +191,66 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
           </div>
         ) : (
           <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Hero 1 Selection */}
               <div className="space-y-4">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={searchQuery1}
                     onChange={(e) => setSearchQuery1(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && searchHeroes(searchQuery1, setSearchResults1)}
-                    placeholder="Search first hero..."
-                    className="flex-1 px-4 py-2 rounded-lg text-xl font-bangers bg-white/90 border-4 border-black focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                    style={{ letterSpacing: '1px' }}
+                    placeholder="Search hero 1..."
+                    className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:border-blue-500"
                   />
                   <button
                     onClick={() => searchHeroes(searchQuery1, setSearchResults1)}
-                    className="px-6 py-2 bg-blue-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+                    className="px-4 py-2 bg-blue-500 text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-sm"
                     style={{ letterSpacing: '1px' }}
                   >
                     SEARCH
                   </button>
                 </div>
 
-                {/* Search Results 1 */}
                 {searchResults1.length > 0 && (
-                  <div className="max-h-48 overflow-y-auto space-y-2 p-2 bg-gray-100 rounded-lg">
-                    {searchResults1.map((hero) => (
-                      <div
-                        key={hero.id}
+                  <div className="max-h-48 overflow-y-auto border-2 border-black rounded-lg">
+                    {searchResults1.map((result) => (
+                      <button
+                        key={result.id}
                         onClick={() => {
-                          setHero1(hero);
+                          setHero1(result);
                           setSearchResults1([]);
+                          setSearchQuery1('');
                         }}
-                        className="flex items-center gap-2 p-2 bg-white rounded cursor-pointer hover:bg-yellow-50"
+                        className="w-full p-2 text-left hover:bg-gray-100 flex items-center gap-2 border-b-2 border-gray-200 last:border-b-0"
                       >
                         <img
-                          src={hero.image.url}
-                          alt={hero.name}
-                          className="w-12 h-12 object-cover rounded"
+                          src={result.image.url}
+                          alt={result.name}
+                          className="w-8 h-8 object-cover rounded"
                         />
-                        <span className="font-bangers">{hero.name}</span>
-                      </div>
+                        <span>{result.name}</span>
+                      </button>
                     ))}
                   </div>
                 )}
 
                 {hero1 && (
                   <div className="text-center">
-                    <div className="relative w-48 h-48 mx-auto">
+                    <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto">
                       <img
                         src={hero1.image.url}
                         alt={hero1.name}
                         className="w-full h-full object-cover rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                       />
+                      <button
+                        onClick={() => setHero1(null)}
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full border-2 border-black flex items-center justify-center font-bold hover:bg-red-600"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <h3 className="mt-2 text-xl font-bangers" style={{ letterSpacing: '1px' }}>
+                    <h3 className="mt-2 text-lg sm:text-xl font-bangers" style={{ letterSpacing: '1px' }}>
                       {hero1.name}
                     </h3>
                   </div>
@@ -254,58 +259,63 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
 
               {/* Hero 2 Selection */}
               <div className="space-y-4">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={searchQuery2}
                     onChange={(e) => setSearchQuery2(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && searchHeroes(searchQuery2, setSearchResults2)}
-                    placeholder="Search second hero..."
-                    className="flex-1 px-4 py-2 rounded-lg text-xl font-bangers bg-white/90 border-4 border-black focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                    style={{ letterSpacing: '1px' }}
+                    placeholder="Search hero 2..."
+                    className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:border-blue-500"
                   />
                   <button
                     onClick={() => searchHeroes(searchQuery2, setSearchResults2)}
-                    className="px-6 py-2 bg-blue-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+                    className="px-4 py-2 bg-blue-500 text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-sm"
                     style={{ letterSpacing: '1px' }}
                   >
                     SEARCH
                   </button>
                 </div>
 
-                {/* Search Results 2 */}
                 {searchResults2.length > 0 && (
-                  <div className="max-h-48 overflow-y-auto space-y-2 p-2 bg-gray-100 rounded-lg">
-                    {searchResults2.map((hero) => (
-                      <div
-                        key={hero.id}
+                  <div className="max-h-48 overflow-y-auto border-2 border-black rounded-lg">
+                    {searchResults2.map((result) => (
+                      <button
+                        key={result.id}
                         onClick={() => {
-                          setHero2(hero);
+                          setHero2(result);
                           setSearchResults2([]);
+                          setSearchQuery2('');
                         }}
-                        className="flex items-center gap-2 p-2 bg-white rounded cursor-pointer hover:bg-yellow-50"
+                        className="w-full p-2 text-left hover:bg-gray-100 flex items-center gap-2 border-b-2 border-gray-200 last:border-b-0"
                       >
                         <img
-                          src={hero.image.url}
-                          alt={hero.name}
-                          className="w-12 h-12 object-cover rounded"
+                          src={result.image.url}
+                          alt={result.name}
+                          className="w-8 h-8 object-cover rounded"
                         />
-                        <span className="font-bangers">{hero.name}</span>
-                      </div>
+                        <span>{result.name}</span>
+                      </button>
                     ))}
                   </div>
                 )}
 
                 {hero2 && (
                   <div className="text-center">
-                    <div className="relative w-48 h-48 mx-auto">
+                    <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto">
                       <img
                         src={hero2.image.url}
                         alt={hero2.name}
                         className="w-full h-full object-cover rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                       />
+                      <button
+                        onClick={() => setHero2(null)}
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full border-2 border-black flex items-center justify-center font-bold hover:bg-red-600"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <h3 className="mt-2 text-xl font-bangers" style={{ letterSpacing: '1px' }}>
+                    <h3 className="mt-2 text-lg sm:text-xl font-bangers" style={{ letterSpacing: '1px' }}>
                       {hero2.name}
                     </h3>
                   </div>
@@ -314,30 +324,17 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
             </div>
 
             {error && (
-              <p className="text-center text-red-500 font-bangers" style={{ letterSpacing: '1px' }}>
-                {error}
-              </p>
+              <p className="text-red-500 text-center font-bold">{error}</p>
             )}
 
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center">
               <button
                 onClick={startBattle}
                 disabled={!hero1 || !hero2}
-                className={`px-6 py-3 font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all ${
-                  !hero1 || !hero2
-                    ? 'bg-gray-400 text-gray-600'
-                    : 'bg-green-500 text-white hover:bg-green-600'
-                }`}
+                className="px-6 py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
                 style={{ letterSpacing: '1px' }}
               >
                 START BATTLE!
-              </button>
-              <button
-                onClick={onClose}
-                className="px-6 py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
-                style={{ letterSpacing: '1px' }}
-              >
-                CANCEL
               </button>
             </div>
           </div>
