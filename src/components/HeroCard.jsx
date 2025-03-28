@@ -25,44 +25,47 @@ const HeroCard = ({ hero, index, handleSelectHero, selectedHeroes, toggleFavorit
     custom={index}
     className={`hero-card relative ${
       theme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'
-    } rounded-xl overflow-hidden shadow-lg backdrop-blur-md transition-transform`}
+    } rounded-xl overflow-hidden shadow-lg backdrop-blur-md transition-transform h-[500px] flex flex-col`}
   >
     <Tilt options={{ max: 25, scale: 1.02 }}>
-      <div className="p-4">
-        <img
-          src={hero.image.url}
-          alt={hero.name}
-          className="w-full h-48 object-cover rounded-lg mb-4"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = '/placeholder.jpg';
-          }}
-        />
-        <h3 className="text-xl font-bold mb-2">{hero.name}</h3>
-        <p className="text-sm mb-2">Publisher: {hero.biography.publisher || 'Unknown'}</p>
-        <p className="text-sm mb-4">Alignment: {hero.biography.alignment || 'Unknown'}</p>
-        
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => handleSelectHero(hero)}
-            className={`btn-primary ${
-              selectedHeroes.includes(hero)
-                ? 'bg-red-500 hover:bg-red-600'
-                : ''
-            }`}
-          >
-            {selectedHeroes.includes(hero) ? 'Deselect' : 'Select'}
-          </button>
-          <button
-            onClick={() => toggleFavorite(hero)}
-            className={`icon-button ${
-              favorites.some(fav => fav.id === hero.id)
-                ? 'favorite-active'
-                : 'favorite-inactive'
-            }`}
-          >
-            <FaStar size={20} />
-          </button>
+      <div className="relative h-full p-4 flex flex-col">
+        <div className="relative flex-grow mb-4" style={{ minHeight: '300px' }}>
+          <img
+            src={hero.image.url}
+            alt={hero.name}
+            className="absolute inset-0 w-full h-full object-contain rounded-lg"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/placeholder.jpg';
+            }}
+          />
+        </div>
+        <div className="flex-none">
+          <h3 className="text-xl font-bold mb-2 truncate">{hero.name}</h3>
+          <p className="text-sm mb-2 truncate">Publisher: {hero.biography.publisher || 'Unknown'}</p>
+          <p className="text-sm mb-4 truncate">Alignment: {hero.biography.alignment || 'Unknown'}</p>
+          
+          <div className="flex justify-between items-center">
+            <button
+              onClick={() => handleSelectHero(hero)}
+              className={`btn-primary ${
+                selectedHeroes.includes(hero)
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : ''
+              }`}
+            >
+              View Details
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(hero);
+              }}
+              className="text-2xl transform transition-transform hover:scale-110"
+            >
+              {favorites.some((fav) => fav.id === hero.id) ? '❤️' : '🤍'}
+            </button>
+          </div>
         </div>
       </div>
     </Tilt>
