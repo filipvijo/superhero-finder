@@ -1,260 +1,157 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import MainContent from "./MainContent";
-import HeroDetails from "./HeroDetails";
-import "./App.css";
+import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import MainContent from './MainContent';
+import HeroDetails from './HeroDetails';
+import GuessHero from './components/GuessHero';
+import BattleArena from './components/BattleArena';
+import PersonalityQuiz from './components/PersonalityQuiz';
+import Navbar from './components/Navbar';
 
 function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [heroes, setHeroes] = useState([]);
-  const [publisherFilter, setPublisherFilter] = useState("all");
-  const [alignmentFilter, setAlignmentFilter] = useState("all");
-  const [selectedHeroes, setSelectedHeroes] = useState([]);
-  const [showComparison, setShowComparison] = useState(false);
-  const [votes, setVotes] = useState(() => {
-    const savedVotes = JSON.parse(localStorage.getItem("votes")) || {};
-    console.log("Loaded votes from localStorage:", savedVotes);
-    return savedVotes;
-  });
-  const [showPollResults, setShowPollResults] = useState(false);
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [quizHero, setQuizHero] = useState(null);
-  const [quizGuess, setQuizGuess] = useState("");
-  const [quizResult, setQuizResult] = useState(null);
-  const [favorites, setFavorites] = useState(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    console.log("Loaded favorites from localStorage:", savedFavorites);
-    return savedFavorites;
-  });
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [voteHistory, setVoteHistory] = useState(() => {
-    const savedHistory = JSON.parse(localStorage.getItem("voteHistory")) || {};
-    console.log("Loaded voteHistory from localStorage:", savedHistory);
-    return savedHistory;
-  });
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme || "dark";
-  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const heroesPerPage = 10;
+  const [selectedHero, setSelectedHero] = useState(null);
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [unlockedHeroes, setUnlockedHeroes] = useState(() => {
+    const saved = localStorage.getItem('unlockedHeroes');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showGuessHero, setShowGuessHero] = useState(false);
+  const [showBattle, setShowBattle] = useState(false);
+  const [showPersonalityQuiz, setShowPersonalityQuiz] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [showCollection, setShowCollection] = useState(false);
+  const [showingHome, setShowingHome] = useState(true);
 
-  // Save theme to local storage whenever it changes
   useEffect(() => {
-    console.log("Saving theme to localStorage:", theme);
-    localStorage.setItem("theme", theme);
-    document.body.className = theme;
-  }, [theme]);
-
-  // Save votes to local storage whenever they change
-  useEffect(() => {
-    console.log("Saving votes to localStorage:", votes);
-    localStorage.setItem("votes", JSON.stringify(votes));
-  }, [votes]);
-
-  // Save vote history to local storage whenever it changes
-  useEffect(() => {
-    console.log("Saving voteHistory to localStorage:", voteHistory);
-    localStorage.setItem("voteHistory", JSON.stringify(voteHistory));
-  }, [voteHistory]);
-
-  // Save favorites to local storage whenever they change
-  useEffect(() => {
-    console.log("Saving favorites to localStorage:", favorites);
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // Reset currentPage when a new search is performed
   useEffect(() => {
-    setCurrentPage(1);
-  }, [heroes]);
+    localStorage.setItem('unlockedHeroes', JSON.stringify(unlockedHeroes));
+  }, [unlockedHeroes]);
 
-  const fetchSuperheroes = async () => {
-    if (!query) return;
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
     setLoading(true);
     setError(null);
-    setShowComparison(false);
-    setShowPollResults(false);
-    setShowQuiz(false);
-    setShowFavorites(false);
-    setShowLeaderboard(false);
-    setSelectedHeroes([]);
-    setQuizResult(null);
+
     try {
-      const response = await axios.get(`https://superhero-proxy.onrender.com/search/${query}`);
-      if (response.data.response === "success") {
-        let filteredHeroes = response.data.results;
+      const response = await axios.get(
+        `https://superheroapi.com/api.php/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
+      );
 
-        // Filter by publisher
-        if (publisherFilter !== "all") {
-          filteredHeroes = filteredHeroes.filter(
-            (hero) => hero.biography.publisher === publisherFilter
-          );
-        }
-
-        // Filter by alignment
-        if (alignmentFilter !== "all") {
-          filteredHeroes = filteredHeroes.filter(
-            (hero) => hero.biography.alignment === alignmentFilter
-          );
-        }
-
-        setHeroes(filteredHeroes);
+      if (response.data.response === 'success') {
+        setHeroes(response.data.results);
       } else {
+        setError('No heroes found. Try another search.');
         setHeroes([]);
-        setError("No heroes found for this search.");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error('Error fetching heroes:', err);
+      setError('Failed to fetch heroes. Please try again.');
       setHeroes([]);
-      setError("Failed to fetch heroes. Please check your connection and try again.");
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
-  const handleSelectHero = (hero) => {
-    if (selectedHeroes.includes(hero)) {
-      setSelectedHeroes(selectedHeroes.filter((h) => h.id !== hero.id));
-    } else if (selectedHeroes.length < 2) {
-      setSelectedHeroes([...selectedHeroes, hero]);
-    }
-  };
-
-  const handleCompare = () => {
-    if (selectedHeroes.length === 2) {
-      setShowComparison(true);
-    }
-  };
-
-  const handleVote = (heroId) => {
-    const hero = heroes.find((h) => h.id === heroId);
-    if (hero) {
-      setVotes((prevVotes) => ({
-        ...prevVotes,
-        [heroId]: (prevVotes[heroId] || 0) + 1,
-      }));
-      setVoteHistory((prevHistory) => ({
-        ...prevHistory,
-        [heroId]: { name: hero.name, publisher: hero.biography.publisher },
-      }));
-    }
-    setShowPollResults(true);
-  };
-
-  const startQuiz = () => {
-    if (heroes.length === 0) return;
-    const randomHero = heroes[Math.floor(Math.random() * heroes.length)];
-    setQuizHero(randomHero);
-    setQuizGuess("");
-    setQuizResult(null);
-    setShowQuiz(true);
-  };
-
-  const handleQuizGuess = () => {
-    if (quizGuess === quizHero.name) {
-      setQuizResult("Correct! Great guess!");
-    } else {
-      setQuizResult(`Wrong! It was ${quizHero.name}.`);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
     }
   };
 
   const toggleFavorite = (hero) => {
-    console.log("Toggling favorite for:", hero.name);
-    if (favorites.some((fav) => fav.id === hero.id)) {
-      console.log("Removing from favorites:", hero.name);
-      setFavorites(favorites.filter((fav) => fav.id !== hero.id));
-    } else {
-      console.log("Adding to favorites:", hero.name);
-      setFavorites([...favorites, hero]);
-    }
+    setFavorites(prevFavorites => {
+      const isFavorite = prevFavorites.some(f => f.id === hero.id);
+      if (isFavorite) {
+        return prevFavorites.filter(f => f.id !== hero.id);
+      } else {
+        return [...prevFavorites, hero];
+      }
+    });
   };
 
-  const resetData = () => {
-    setVotes({});
-    setVoteHistory({});
-    setFavorites([]);
-    localStorage.removeItem("votes");
-    localStorage.removeItem("voteHistory");
-    localStorage.removeItem("favorites");
-    setShowPollResults(false);
-    setShowLeaderboard(false);
-    setShowFavorites(false);
-    console.log("All data reset: votes, voteHistory, and favorites cleared.");
+  const addToCollection = (hero) => {
+    setUnlockedHeroes(prev => {
+      if (!prev.some(h => h.id === hero.id)) {
+        return [...prev, hero];
+      }
+      return prev;
+    });
   };
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
+  const displayedHeroes = showFavorites 
+    ? favorites 
+    : showCollection 
+      ? unlockedHeroes 
+      : heroes;
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <MainContent
-              query={query}
-              setQuery={setQuery}
-              heroes={heroes}
-              setHeroes={setHeroes}
-              publisherFilter={publisherFilter}
-              setPublisherFilter={setPublisherFilter}
-              alignmentFilter={alignmentFilter}
-              setAlignmentFilter={setAlignmentFilter}
-              selectedHeroes={selectedHeroes}
-              setSelectedHeroes={setSelectedHeroes}
-              showComparison={showComparison}
-              setShowComparison={setShowComparison}
-              votes={votes}
-              setVotes={setVotes}
-              showPollResults={showPollResults}
-              setShowPollResults={setShowPollResults}
-              showQuiz={showQuiz}
-              setShowQuiz={setShowQuiz}
-              quizHero={quizHero}
-              setQuizHero={setQuizHero}
-              quizGuess={quizGuess}
-              setQuizGuess={setQuizGuess}
-              quizResult={quizResult}
-              setQuizResult={setQuizResult}
-              favorites={favorites}
-              setFavorites={setFavorites}
-              showFavorites={showFavorites}
-              setShowFavorites={setShowFavorites}
-              showLeaderboard={showLeaderboard}
-              setShowLeaderboard={setShowLeaderboard}
-              voteHistory={voteHistory}
-              setVoteHistory={setVoteHistory}
-              theme={theme}
-              toggleTheme={toggleTheme}
-              fetchSuperheroes={fetchSuperheroes}
-              handleSelectHero={handleSelectHero}
-              handleCompare={handleCompare}
-              handleVote={handleVote}
-              startQuiz={startQuiz}
-              handleQuizGuess={handleQuizGuess}
-              toggleFavorite={toggleFavorite}
-              resetData={resetData}
-              loading={loading}
-              error={error}
-              setError={setError}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              heroesPerPage={heroesPerPage}
-            />
-          }
-        />
-        <Route
-          path="/hero/:id"
-          element={<HeroDetails heroes={heroes} favorites={favorites} />}
-        />
-      </Routes>
-    </Router>
+    <div className="min-h-screen">
+      <Navbar
+        favorites={favorites}
+        unlockedHeroes={unlockedHeroes}
+        setShowFavorites={setShowFavorites}
+        setShowCollection={setShowCollection}
+        setShowingHome={setShowingHome}
+      />
+
+      <MainContent
+        query={query}
+        setQuery={setQuery}
+        heroes={displayedHeroes}
+        loading={loading}
+        error={error}
+        handleSearch={handleSearch}
+        handleKeyPress={handleKeyPress}
+        handleSelectHero={setSelectedHero}
+        toggleFavorite={toggleFavorite}
+        favorites={favorites}
+        setShowGuessHero={setShowGuessHero}
+        setShowBattle={setShowBattle}
+        setShowPersonalityQuiz={setShowPersonalityQuiz}
+        showingHome={showingHome}
+        showFavorites={showFavorites}
+        showCollection={showCollection}
+      />
+
+      <AnimatePresence>
+        {selectedHero && (
+          <HeroDetails hero={selectedHero} onClose={() => setSelectedHero(null)} />
+        )}
+
+        {showGuessHero && (
+          <GuessHero 
+            onClose={() => setShowGuessHero(false)} 
+            onUnlock={addToCollection}
+          />
+        )}
+
+        {showBattle && (
+          <BattleArena onClose={() => setShowBattle(false)} />
+        )}
+
+        {showPersonalityQuiz && (
+          <PersonalityQuiz 
+            onClose={() => setShowPersonalityQuiz(false)} 
+            onHeroMatch={(hero) => {
+              setSelectedHero(hero);
+              setShowPersonalityQuiz(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 

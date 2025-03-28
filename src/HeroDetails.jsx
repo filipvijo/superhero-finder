@@ -1,98 +1,105 @@
-import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Tilt } from "react-tilt";
+import { motion } from 'framer-motion';
 
-function HeroDetails({ heroes, favorites }) {
-  const { id } = useParams();
-  const hero = heroes.find((h) => h.id === id) || favorites.find((f) => f.id === id);
-
-  if (!hero) {
-    return (
-      <motion.div
-        className="text-center p-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="text-2xl font-bold mb-4">Hero Not Found</h2>
-        <motion.button
-          className="p-3 rounded font-bold"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Link to="/">Back to Search</Link>
-        </motion.button>
-      </motion.div>
-    );
-  }
+const HeroDetails = ({ hero, onClose }) => {
+  if (!hero) return null;
 
   return (
     <motion.div
-      className="p-6 text-center"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+      onClick={onClose}
     >
-      <motion.h2
-        className="text-3xl font-bold mb-4"
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <motion.div
+        initial={{ scale: 0.8, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.8, y: 20 }}
+        className="bg-white rounded-lg max-w-4xl w-full border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
+        onClick={e => e.stopPropagation()}
       >
-        {hero.name}
-      </motion.h2>
-      <motion.img
-        src={hero.image.url}
-        alt={hero.name}
-        className="w-60 mx-auto rounded mb-4"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      />
-      <Tilt className="tilt-card" options={{ max: 25, scale: 1.05, speed: 300 }}>
-        <motion.div
-          className="hero-card rounded p-4 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <h3 className="text-xl font-bold mb-2">Biography</h3>
-          <p><strong>Full Name:</strong> {hero.biography["full-name"] || "Unknown"}</p>
-          <p><strong>Aliases:</strong> {hero.biography.aliases.join(", ") || "None"}</p>
-          <p><strong>Publisher:</strong> {hero.biography.publisher}</p>
-          <p><strong>Alignment:</strong> {hero.biography.alignment}</p>
-          <p><strong>First Appearance:</strong> {hero.biography["first-appearance"] || "Unknown"}</p>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Hero Image */}
+          <div className="relative h-96 md:h-full">
+            <img
+              src={hero.image.url}
+              alt={hero.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-          <h3 className="text-xl font-bold mt-4 mb-2">Power Stats</h3>
-          <p><strong>Intelligence:</strong> {hero.powerstats.intelligence}</p>
-          <p><strong>Strength:</strong> {hero.powerstats.strength}</p>
-          <p><strong>Speed:</strong> {hero.powerstats.speed}</p>
-          <p><strong>Durability:</strong> {hero.powerstats.durability}</p>
-          <p><strong>Power:</strong> {hero.powerstats.power}</p>
-          <p><strong>Combat:</strong> {hero.powerstats.combat}</p>
+          {/* Hero Info */}
+          <div className="p-6 overflow-y-auto max-h-[600px]">
+            <h2 className="text-4xl font-bangers mb-6 text-center" style={{ letterSpacing: '2px' }}>
+              {hero.name}
+            </h2>
 
-          <h3 className="text-xl font-bold mt-4 mb-2">Appearance</h3>
-          <p><strong>Gender:</strong> {hero.appearance.gender}</p>
-          <p><strong>Race:</strong> {hero.appearance.race || "Unknown"}</p>
-          <p><strong>Height:</strong> {hero.appearance.height.join(" / ")}</p>
-          <p><strong>Weight:</strong> {hero.appearance.weight.join(" / ")}</p>
-          <p><strong>Eye Color:</strong> {hero.appearance["eye-color"]}</p>
-          <p><strong>Hair Color:</strong> {hero.appearance["hair-color"]}</p>
+            {/* Power Stats */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bangers mb-3" style={{ letterSpacing: '1px' }}>POWER STATS</h3>
+              <div className="space-y-2">
+                {Object.entries(hero.powerstats).map(([stat, value]) => (
+                  <div key={stat} className="flex items-center">
+                    <span className="font-bangers w-32 text-gray-600" style={{ letterSpacing: '1px' }}>
+                      {stat.toUpperCase()}:
+                    </span>
+                    <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-yellow-400"
+                        style={{ width: `${value}%` }}
+                      />
+                    </div>
+                    <span className="ml-2 font-bold">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <h3 className="text-xl font-bold mt-4 mb-2">Work</h3>
-          <p><strong>Occupation:</strong> {hero.work.occupation || "Unknown"}</p>
-          <p><strong>Base:</strong> {hero.work.base || "Unknown"}</p>
-        </motion.div>
-      </Tilt>
-      <motion.button
-        className="mt-4 inline-block p-3 rounded font-bold"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Link to="/">Back to Search</Link>
-      </motion.button>
+            {/* Biography */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bangers mb-3" style={{ letterSpacing: '1px' }}>BIOGRAPHY</h3>
+              <div className="space-y-2">
+                <p><span className="font-bangers text-gray-600">FULL NAME:</span> {hero.biography['full-name']}</p>
+                <p><span className="font-bangers text-gray-600">ALTER EGOS:</span> {hero.biography['alter-egos']}</p>
+                <p><span className="font-bangers text-gray-600">PUBLISHER:</span> {hero.biography.publisher}</p>
+                <p><span className="font-bangers text-gray-600">ALIGNMENT:</span> {hero.biography.alignment}</p>
+              </div>
+            </div>
+
+            {/* Appearance */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bangers mb-3" style={{ letterSpacing: '1px' }}>APPEARANCE</h3>
+              <div className="space-y-2">
+                <p><span className="font-bangers text-gray-600">RACE:</span> {hero.appearance.race}</p>
+                <p><span className="font-bangers text-gray-600">HEIGHT:</span> {hero.appearance.height[1]}</p>
+                <p><span className="font-bangers text-gray-600">WEIGHT:</span> {hero.appearance.weight[1]}</p>
+                <p><span className="font-bangers text-gray-600">EYE COLOR:</span> {hero.appearance['eye-color']}</p>
+                <p><span className="font-bangers text-gray-600">HAIR COLOR:</span> {hero.appearance['hair-color']}</p>
+              </div>
+            </div>
+
+            {/* Work */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bangers mb-3" style={{ letterSpacing: '1px' }}>WORK</h3>
+              <div className="space-y-2">
+                <p><span className="font-bangers text-gray-600">OCCUPATION:</span> {hero.work.occupation}</p>
+                <p><span className="font-bangers text-gray-600">BASE:</span> {hero.work.base}</p>
+              </div>
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="w-full px-6 py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+              style={{ letterSpacing: '1px' }}
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
-}
+};
 
 export default HeroDetails;

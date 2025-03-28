@@ -2,7 +2,172 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+@layer components {
+  .app-container {
+    @apply min-h-screen;
+  }
+
+  .hero-card {
+    @apply transform transition-all duration-300 ease-in-out;
+  }
+
+  .hero-card:hover {
+    @apply shadow-2xl;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50;
+  }
+
+  .input-primary {
+    @apply w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:border-blue-500 focus:outline-none bg-white/10 backdrop-blur-md;
+  }
+
+  .nav-button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-colors;
+  }
+
+  .cards-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+
+  .theme-dark {
+    @apply bg-gray-900 text-white;
+  }
+
+  .theme-light {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/10;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-md rounded-xl overflow-hidden shadow-lg;
+  }
+
+  .responsive-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .fade-enter {
+    @apply opacity-0;
+  }
+
+  .fade-enter-active {
+    @apply opacity-100 transition-opacity duration-300;
+  }
+
+  .fade-exit {
+    @apply opacity-100;
+  }
+
+  .fade-exit-active {
+    @apply opacity-0 transition-opacity duration-300;
+  }
+
+  .pagination-button {
+    @apply px-4 py-2 rounded-lg transition-colors;
+  }
+
+  .pagination-button-active {
+    @apply bg-blue-600 text-white;
+  }
+
+  .pagination-button-inactive {
+    @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+  }
+
+  .filter-select {
+    @apply px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border-2 border-gray-300;
+  }
+
+  .error-message {
+    @apply text-red-500;
+  }
+
+  .info-message {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .icon-button {
+    @apply p-2 rounded-full transition-colors;
+  }
+
+  .favorite-active {
+    @apply p-2 rounded-full text-yellow-500 hover:text-yellow-600 transition-colors;
+  }
+
+  .favorite-inactive {
+    @apply p-2 rounded-full text-gray-400 hover:text-yellow-500 transition-colors;
+  }
+
+  .hero-card {
+    @apply relative rounded-xl overflow-hidden shadow-lg backdrop-blur-md;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500;
+  }
+}
+
+.parallax-container {
+  height: 100vh;
+}
+
+.hero-card {
+  background: linear-gradient(145deg, #1a202c, #2d3748);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 20rem;
+}
+
+.hero-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #1a73e8;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  color: #e53e3e;
+  font-weight: bold;
+}
+
+@media (max-width: 479px) {
+  .hero-detail-container {
+    flex-direction: column !important;
+  }
+  .hero-detail-container > div {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  .hero-detail-container .hero-card {
+    margin: 0 auto;
+  }
 }

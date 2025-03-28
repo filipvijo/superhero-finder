@@ -6,12 +6,44 @@ body {
   letter-spacing: 1px;
 }
 
+/* Dark Mode */
 body.dark {
-  color: #FA73DD;
+  color: #FFD700;
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), #1f2937;
 }
 
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark p {
+  color: #FFD700;
+  text-shadow: 2px 2px 0 #000;
+}
+
+body.dark .hero-card p,
+body.dark .hero-card h2 {
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Light Mode */
 body.light {
-  color: #333;
+  color: #D00000;
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), #F5F5F5;
+}
+
+body.light h1,
+body.light h2,
+body.light h3,
+body.light p {
+  color: #D00000;
+  text-shadow: 2px 2px 0 #FFF;
+}
+
+body.light .hero-card p,
+body.light .hero-card h2 {
+  color: #1F2937;
+  text-shadow: 1px 1px 0 #FFF;
 }
 
 /* Parallax Container */
@@ -24,20 +56,127 @@ body.light {
   z-index: -1;
 }
 
+/* Navigation Bar */
+.nav-bar {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  background: #1f2937;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.nav-input {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 3px solid #ffd700;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #ffd700;
+  transform: scale(1.02);
+}
+
+.nav-select {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+  background: #FFD700;
+  border: 3px solid #000;
+  color: #000;
+  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 8px;
+}
+
+.nav-select:focus {
+  outline: none;
+  box-shadow: 0 0 10px #ffd700;
+  transform: scale(1.02);
+}
+
+.nav-btn {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+  border: 3px solid #000;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ffd700;
+}
+
+.nav-btn.favorites-btn,
+.nav-btn.leaderboard-btn,
+.nav-btn.collection-btn {
+  background: #FF4B5C;
+  color: #FFFFFF;
+}
+
+.nav-btn.search-btn {
+  background: #FF4B5C;
+  color: #FFFFFF;
+}
+
+.nav-btn.reset-btn {
+  background: #00FF00;
+  color: #000;
+}
+
+.nav-btn.theme-btn {
+  background: #FFD700;
+  color: #000;
+}
+
 /* Header Styles */
 header {
   background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #ff4b5c 0%, #3b82f6 100%);
-  padding: 2rem;
+  padding: 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border-bottom: 4px solid #ffd700;
   position: relative;
   z-index: 1;
 }
 
+header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+
+body.light header::before {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 h1 {
-  font-size: 3.5rem;
-  text-shadow: 3px 3px 0 #ffd700, 6px 6px 0 #000;
+  font-size: 3rem;
   margin: 0;
+}
+
+/* Search Bar Label */
+.search-label {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+body.dark .search-label {
+  color: #FFD700;
+  text-shadow: 1px 1px 0 #000;
+}
+
+body.light .search-label {
+  color: #D00000;
+  text-shadow: 1px 1px 0 #FFF;
 }
 
 /* Input and Button Styles */
@@ -47,10 +186,14 @@ input, select, button {
 }
 
 input, select {
+  font-size: 1rem;
   background: rgba(255, 255, 255, 0.9);
   border: 3px solid #ffd700;
   color: #333;
   transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
 }
 
 input:focus, select:focus {
@@ -60,9 +203,9 @@ input:focus, select:focus {
 }
 
 button {
-  background: #3b82f6;
-  color: white;
+  font-size: 1rem;
   border: 3px solid #ffd700;
+  padding: 8px 16px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -76,24 +219,62 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Button Styles for Dark Mode */
 body.dark button {
-  background: #ff4b5c;
+  background: #FF4B5C;
+  color: #FFFFFF;
+}
+
+body.dark .guess-superhero-btn {
+  background: #FFD700;
+  color: #FF4B5C;
+  border: 3px solid #FF4B5C;
+}
+
+body.dark .reset-btn {
+  background: #00FF00;
+  color: #000;
+}
+
+body.dark .theme-btn {
+  background: #FFD700;
+  color: #FF4B5C;
+}
+
+/* Button Styles for Light Mode */
+body.light button {
+  background: #3B82F6;
+  color: #FFFFFF;
+}
+
+body.light .guess-superhero-btn {
+  background: #D00000;
+  color: #FFD700;
+  border: 3px solid #FFD700;
+}
+
+body.light .reset-btn {
+  background: #00FF00;
+  color: #000;
+}
+
+body.light .theme-btn {
+  background: #D00000;
+  color: #FFD700;
 }
 
 /* Card Styles */
 .hero-card {
-  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   border: 4px solid #ffd700;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  width: 220px !important;
+  margin: 1rem;
+  padding: 1rem;
 }
 
 body.light .hero-card {
-  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
-}
-
-.hero-card img {
-  border: 2px solid #ffd700;
-  border-radius: 8px;
+  background: url('https://www.transparenttextures.com/patterns/comic.png'), linear-gradient(135deg, #93c5fd 0%, #3b82f6 100%);
 }
 
 /* Tilt Effect */
@@ -108,7 +289,7 @@ body.light .hero-card {
 /* Spinner Styles */
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #FA73DD;
+  border-left-color: #FFD700;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -117,7 +298,7 @@ body.light .hero-card {
 }
 
 body.light .spinner {
-  border-left-color: #4a90e2;
+  border-left-color: #D00000;
 }
 
 @keyframes spin {
@@ -140,4 +321,187 @@ body.light .spinner {
 main {
   position: relative;
   z-index: 1;
+  padding: 1.5rem;
+}
+
+/* Hero Detail Page */
+.hero-detail-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.hero-detail-card {
+  width: 300px !important;
+}
+
+.hero-detail-info {
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 2px solid #ffd700;
+}
+
+/* Comic Book Panel for Clues */
+.comic-panel {
+  position: relative;
+  background: linear-gradient(135deg, #FFF 0%, #E5E5E5 100%);
+  border: 4px solid #000;
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* POW! Effect */
+.pow-effect {
+  font-family: 'Bangers', cursive;
+  color: #FFD700;
+  text-shadow: 2px 2px 0 #000;
+  position: absolute;
+  z-index: 1;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  /* Navigation Bar */
+  .nav-bar {
+    padding: 0.5rem;
+    top: 10px;
+  }
+
+  .nav-input {
+    font-size: 0.9rem;
+    padding: 6px;
+    max-width: 100%;
+  }
+
+  .nav-select {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .nav-btn {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  /* Header */
+  header {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .search-label {
+    font-size: 1rem;
+    margin-right: 4px;
+  }
+
+  input, select {
+    font-size: 0.9rem;
+    padding: 6px;
+    max-width: 100%;
+  }
+
+  button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  /* Stack header elements vertically */
+  header > div {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem !important;
+  }
+
+  /* Hero Cards */
+  .hero-card {
+    width: 100% !important;
+    max-width: 280px;
+    margin: 0.5rem auto;
+    padding: 0.75rem;
+  }
+
+  /* Main Content */
+  main {
+    padding: 1rem;
+    padding-top: 8rem; /* Adjust for smaller nav */
+  }
+
+  /* Hero Detail Page */
+  .hero-detail-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .hero-detail-card {
+    width: 100% !important;
+    max-width: 280px;
+  }
+
+  .hero-detail-info {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  /* Comparison View */
+  .flex.justify-center.gap-8 {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hero-card.w-80 {
+    width: 100% !important;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  /* Comic Panel for Clues */
+  .comic-panel {
+    max-width: 250px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Header */
+  h1 {
+    font-size: 3rem;
+  }
+
+  /* Hero Cards */
+  .hero-card {
+    width: 200px !important;
+  }
+
+  /* Hero Detail Page */
+  .hero-detail-card {
+    width: 250px !important;
+  }
+
+  .hero-detail-info {
+    max-width: 400px;
+  }
+}
+
+.comic-text {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; /* Or a custom comic font */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.font-comic {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+
+.pow-effect {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+  text-shadow: 1px 1px 2px black;
 }
