@@ -54,18 +54,18 @@ function App() {
 
     try {
       const response = await axios.get(
-        `https://superheroapi.com/api/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
+        `/api/api/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
       );
 
       if (response.data.response === 'success') {
         setHeroes(response.data.results);
       } else {
-        setError('No heroes found. Try another search.');
+        setError(i18n.t('noHeroes'));
         setHeroes([]);
       }
     } catch (err) {
       console.error('Error fetching heroes:', err);
-      setError('Failed to fetch heroes. Please try again.');
+      setError(i18n.t('searchError'));
       setHeroes([]);
     }
 
@@ -140,6 +140,7 @@ function App() {
                 showingHome={showingHome}
                 showFavorites={showFavorites}
                 showCollection={showCollection}
+                setShowingHome={setShowingHome}
               />
             </div>
           </Suspense>

@@ -26,6 +26,9 @@ const resources = {
       battleArena: 'BATTLE ARENA!',
       findMatch: 'FIND YOUR MATCH!',
       searching: 'SEARCHING THE MULTIVERSE...',
+      searchMessage: 'Search for your favorite superhero!',
+      noHeroes: 'No heroes found. Try another search.',
+      searchError: 'Failed to fetch heroes. Please try again.',
       
       // Battle Arena
       searchHero1: 'Search hero 1...',
@@ -106,6 +109,9 @@ const resources = {
       battleArena: "L'ARÈNE DE COMBAT!",
       findMatch: 'TROUVE TON MATCH!',
       searching: 'RECHERCHE DANS LE MULTIVERS...',
+      searchMessage: 'Rechercher votre super-héros préféré!',
+      noHeroes: 'Aucun héros trouvé. Essayez une autre recherche.',
+      searchError: 'Échec de la récupération des héros. Veuillez réessayer.',
       
       // Battle Arena
       searchHero1: 'Rechercher héros 1...',
