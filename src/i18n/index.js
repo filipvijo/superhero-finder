@@ -19,11 +19,17 @@ const resources = {
       alreadyHaveAccount: 'Already have an account?',
       dontHaveAccount: "Don't have an account?",
       
+      // Main Content
+      searchHero: 'Search for a superhero...',
+      search: 'SEARCH!',
+      guessHero: 'GUESS THE HERO!',
+      battleArena: 'BATTLE ARENA!',
+      findMatch: 'FIND YOUR MATCH!',
+      searching: 'SEARCHING THE MULTIVERSE...',
+      
       // Battle Arena
-      battleArena: 'Battle Arena',
       searchHero1: 'Search hero 1...',
       searchHero2: 'Search hero 2...',
-      search: 'Search',
       startBattle: 'Start Battle!',
       battleInProgress: 'Battle in Progress...',
       newBattle: 'New Battle',
@@ -91,11 +97,17 @@ const resources = {
       alreadyHaveAccount: 'Déjà un compte?',
       dontHaveAccount: "Pas encore de compte?",
       
+      // Main Content
+      searchHero: 'Rechercher un super-héros...',
+      search: 'CHERCHER!',
+      guessHero: 'DEVINEZ LE HÉROS!',
+      battleArena: 'ARÈNE DE COMBAT!',
+      findMatch: 'TROUVEZ VOTRE MATCH!',
+      searching: 'RECHERCHE DANS LE MULTIVERS...',
+      
       // Battle Arena
-      battleArena: 'Arène de Combat',
       searchHero1: 'Rechercher héros 1...',
       searchHero2: 'Rechercher héros 2...',
-      search: 'Rechercher',
       startBattle: 'Commencer le Combat!',
       battleInProgress: 'Combat en Cours...',
       newBattle: 'Nouveau Combat',
