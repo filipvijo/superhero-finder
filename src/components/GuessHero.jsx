@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import HeroCard from './HeroCard';
 
-const GuessHero = ({ onClose, onUnlock }) => {
+const GuessHero = ({ onClose, addToCollection }) => {
   const [hero, setHero] = useState(null);
   const [clues, setClues] = useState([]);
   const [guess, setGuess] = useState('');
@@ -53,7 +54,7 @@ const GuessHero = ({ onClose, onUnlock }) => {
           messages: [
             {
               role: 'system',
-              content: `You are a comic book expert creating clues for a superhero guessing game. Create 3 clues that hint at the hero's identity without directly revealing their name. Make the clues progressively easier, with the last one being quite obvious. Return the clues as a simple JSON array of strings, with no markdown formatting or additional text. The clues should be in ${i18n.language === 'fr' ? 'French' : 'English'}.`
+              content: 'You are a comic book expert creating clues for a superhero guessing game. Create 3 clues that hint at the hero\'s identity without directly revealing their name. Make the clues progressively easier, with the last one being quite obvious. Return ONLY a JSON array of 3 strings, nothing else.'
             },
             {
               role: 'user',
@@ -63,7 +64,9 @@ const GuessHero = ({ onClose, onUnlock }) => {
                 Appearance: ${Object.entries(hero.appearance).map(([key, value]) => `${key}: ${value}`).join(', ')}
                 Work: ${Object.entries(hero.work).map(([key, value]) => `${key}: ${value}`).join(', ')}`
             }
-          ]
+          ],
+          temperature: 0.7,
+          max_tokens: 200
         },
         {
           headers: {
@@ -74,24 +77,27 @@ const GuessHero = ({ onClose, onUnlock }) => {
       );
 
       const content = response.data.choices[0].message.content;
-      const cleanContent = content.replace(/```json\n|\n```/g, '').trim();
-      const cluesArray = JSON.parse(cleanContent);
-      
-      if (!Array.isArray(cluesArray) || cluesArray.length !== 3) {
-        throw new Error(t('noInformation'));
-      }
+      // Clean up the content to ensure it's valid JSON
+      const cleanContent = content
+        .replace(/```json\n?|\n?```/g, '') // Remove code blocks
+        .replace(/[\n\r]/g, '') // Remove newlines
+        .trim();
 
-      setClues(cluesArray);
-      setLoading(false);
+      try {
+        const cluesArray = JSON.parse(cleanContent);
+        if (!Array.isArray(cluesArray) || cluesArray.length !== 3) {
+          throw new Error('Invalid clues format');
+        }
+        setClues(cluesArray);
+        setLoading(false);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        console.log('Content received:', cleanContent);
+        throw new Error('Invalid clues format');
+      }
     } catch (err) {
       console.error('Error generating clues:', err);
-      if (err.response?.status === 401) {
-        setError(t('noInformation'));
-      } else if (err.message === 'Invalid clues format received from API') {
-        setError(t('noInformation'));
-      } else {
-        setError(err.message || t('noInformation'));
-      }
+      setError(t('noInformation'));
       setLoading(false);
     }
   };
@@ -103,7 +109,7 @@ const GuessHero = ({ onClose, onUnlock }) => {
     if (isCorrect) {
       setSuccess(true);
       setGameOver(true);
-      onUnlock();
+      addToCollection(hero);
     } else {
       setAttempts(prev => prev + 1);
       if (attempts + 1 >= maxAttempts) {
@@ -161,11 +167,11 @@ const GuessHero = ({ onClose, onUnlock }) => {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 overflow-y-auto py-8">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full"
+        className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full mx-4"
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bangers" style={{ letterSpacing: '1px' }}>
@@ -202,8 +208,8 @@ const GuessHero = ({ onClose, onUnlock }) => {
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleGuess()}
-                  className="flex-1 px-3 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
                   placeholder={t('enterGuess')}
+                  className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 />
                 <button
                   onClick={handleGuess}
@@ -217,30 +223,27 @@ const GuessHero = ({ onClose, onUnlock }) => {
           </>
         ) : (
           <div className="text-center">
-            <h3 className="text-xl font-bangers mb-4" style={{ letterSpacing: '1px' }}>
-              {success ? t('congratulations') : t('gameOver')}
-            </h3>
-            <p className="mb-6">
-              {success
-                ? t('correctGuess')
-                : t('heroWas', { name: hero.name })}
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={handlePlayAgain}
-                className="px-6 py-2 bg-yellow-400 text-black font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-                style={{ letterSpacing: '1px' }}
-              >
-                {t('playAgain')}
-              </button>
-              <button
-                onClick={onClose}
-                className="px-6 py-2 bg-gray-200 text-black font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-                style={{ letterSpacing: '1px' }}
-              >
-                {t('close')}
-              </button>
-            </div>
+            {success ? (
+              <>
+                <h3 className="text-xl font-bangers mb-4 text-green-600" style={{ letterSpacing: '1px' }}>
+                  {t('correctGuess')}
+                </h3>
+                <div className="mb-4">
+                  <HeroCard hero={hero} />
+                </div>
+              </>
+            ) : (
+              <h3 className="text-xl font-bangers mb-4 text-red-600" style={{ letterSpacing: '1px' }}>
+                {t('wrongGuess', { heroName: hero.name })}
+              </h3>
+            )}
+            <button
+              onClick={handlePlayAgain}
+              className="px-6 py-2 bg-yellow-400 text-black font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+              style={{ letterSpacing: '1px' }}
+            >
+              {t('playAgain')}
+            </button>
           </div>
         )}
       </motion.div>

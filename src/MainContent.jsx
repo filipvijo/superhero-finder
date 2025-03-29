@@ -15,9 +15,19 @@ const MainContent = ({
   favorites,
   setShowGuessHero,
   setShowBattle,
-  setShowPersonalityQuiz
+  setShowPersonalityQuiz,
+  showingHome,
+  showFavorites,
+  showCollection,
+  setShowingHome
 }) => {
   const { t } = useTranslation();
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setShowingHome(true);
+    handleSearch(e);
+  };
   
   return (
     <div className="min-h-screen bg-[url('/background.jpg')] bg-cover bg-center bg-fixed pt-24">
@@ -29,7 +39,7 @@ const MainContent = ({
             SUPERHERO FINDER
           </h1>
           <div className="max-w-2xl mx-auto">
-            <form onSubmit={handleSearch} className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
                 value={query}
@@ -100,17 +110,42 @@ const MainContent = ({
         )}
 
         {/* Hero Cards Grid */}
-        {!loading && !error && heroes.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {heroes.map((hero) => (
-              <HeroCard
-                key={hero.id}
-                hero={hero}
-                onClick={() => handleSelectHero(hero)}
-                isFavorite={favorites.some(f => f.id === hero.id)}
-                onToggleFavorite={() => toggleFavorite(hero)}
-              />
-            ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {heroes.map((hero) => (
+            <HeroCard
+              key={hero.id}
+              hero={hero}
+              onSelect={handleSelectHero}
+              isFavorite={favorites.some((f) => f.id === hero.id)}
+              onToggleFavorite={() => toggleFavorite(hero)}
+            />
+          ))}
+        </div>
+
+        {/* No Results Message */}
+        {!loading && !error && heroes.length === 0 && showingHome && (
+          <div className="text-center py-8">
+            <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
+              {t('noHeroes')}
+            </p>
+          </div>
+        )}
+
+        {/* Empty Favorites Message */}
+        {!loading && !error && heroes.length === 0 && showFavorites && (
+          <div className="text-center py-8">
+            <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
+              {t('noFavorites')}
+            </p>
+          </div>
+        )}
+
+        {/* Empty Collection Message */}
+        {!loading && !error && heroes.length === 0 && showCollection && (
+          <div className="text-center py-8">
+            <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
+              {t('noCollection')}
+            </p>
           </div>
         )}
       </div>
