@@ -39,13 +39,19 @@ const MainContent = ({
           <div className="w-full max-w-2xl mx-auto">
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 relative">
               <input
-                type="text"
+                type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearchSubmit(e);
+                  }
+                }}
                 placeholder={t('searchHero')}
                 className="flex-1 px-6 py-3 rounded-lg text-xl font-bangers bg-white/90 border-4 border-black focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                 style={{ letterSpacing: '1px' }}
+                enterKeyHint="search"
               />
               <button
                 type="submit"
