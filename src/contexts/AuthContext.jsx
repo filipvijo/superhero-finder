@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import {
-  signInWithPopup,
-  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -17,13 +17,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
+  const signup = async (email, password) => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await createUserWithEmailAndPassword(auth, email, password);
       return result.user;
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error('Error signing up:', error);
+      throw error;
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return result.user;
+    } catch (error) {
+      console.error('Error logging in:', error);
       throw error;
     }
   };
@@ -48,7 +57,8 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    signInWithGoogle,
+    signup,
+    login,
     logout
   };
 

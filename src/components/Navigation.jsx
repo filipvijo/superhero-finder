@@ -48,7 +48,7 @@ const Navigation = ({ showFavorites, setShowFavorites, showCollection, setShowCo
           className="px-4 py-2 bg-yellow-400 text-black font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
           style={{ letterSpacing: '1px' }}
         >
-          HOME
+          {t('home')}
         </button>
         <button
           onClick={toggleLanguage}
@@ -70,14 +70,14 @@ const Navigation = ({ showFavorites, setShowFavorites, showCollection, setShowCo
           className={`px-4 py-2 ${showCollection ? 'bg-purple-600' : 'bg-purple-500'} text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all`}
           style={{ letterSpacing: '1px' }}
         >
-          COLLECTION
+          {t('collection')}
         </button>
         <button
           onClick={handleShowFavorites}
           className={`px-4 py-2 ${showFavorites ? 'bg-red-600' : 'bg-red-500'} text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all`}
           style={{ letterSpacing: '1px' }}
         >
-          FAVORITES
+          {t('favorites')}
         </button>
       </div>
 
@@ -99,7 +99,7 @@ const Navigation = ({ showFavorites, setShowFavorites, showCollection, setShowCo
         ) : (
           <button
             onClick={() => setIsAuthModalOpen(true)}
-            className="px-4 py-2 bg-blue-500 text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+            className="px-4 py-2 bg-yellow-400 text-black font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
             style={{ letterSpacing: '1px' }}
           >
             {t('signIn')}

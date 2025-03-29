@@ -17,7 +17,7 @@ const resources = {
       signUp: 'Sign Up',
       continueWith: 'Or continue with',
       alreadyHaveAccount: 'Already have an account?',
-      dontHaveAccount: "Don't have an account?",
+      needAccount: "Need an account?",
       
       // Main Content
       searchHero: 'Search for a superhero...',
@@ -35,49 +35,51 @@ const resources = {
       newBattle: 'New Battle',
       close: 'Close',
       
-      // Media Hub
-      didYouKnow: 'Did You Know?',
+      // Hero Details
+      biography: 'Biography',
+      fullName: 'Full Name',
+      alterEgos: 'Alter Egos',
+      birthplace: 'Birthplace',
       firstAppearance: 'First Appearance',
-      secretIdentity: 'Secret Identity',
+      publisher: 'Publisher',
+      alignment: 'Alignment',
+      
+      // Power Stats
       powerStats: 'Power Stats',
-      physicalTraits: 'Physical Traits',
-      occupation: 'Occupation',
-      connections: 'Connections',
+      intelligence: 'Intelligence',
+      strength: 'Strength',
+      speed: 'Speed',
+      durability: 'Durability',
+      power: 'Power',
+      combat: 'Combat',
+      
+      // Appearance
+      appearance: 'Appearance',
+      gender: 'Gender',
+      race: 'Race',
       height: 'Height',
       weight: 'Weight',
       eyeColor: 'Eye Color',
       hairColor: 'Hair Color',
+      
+      // Work & Connections
+      work: 'Work',
+      occupation: 'Occupation',
       base: 'Base',
+      connections: 'Connections',
       groupAffiliation: 'Group Affiliation',
       relatives: 'Relatives',
+      
+      // Common
       unknown: 'Unknown',
-      unknownOccupation: 'Unknown occupation',
-      unknownLocation: 'Unknown location',
-      noneKnown: 'None known',
-      noKnownAlterEgos: 'no known alter egos',
-      strongestAttribute: 'Strongest attribute',
-      powerLevel: 'Power Level',
+      none: 'None',
+      noInformation: 'No information available',
       
-      // Movies & Shows
-      moviesAndShows: 'Movies & Shows',
-      release: 'Release',
-      watchOn: 'Watch on',
-      buyOn: 'Buy on',
-      
-      // Comics
-      comics: 'Comics',
-      publisher: 'Publisher',
-      
-      // Merchandise
-      merchandise: 'Merchandise',
-      availableAt: 'Available at',
-      shopNow: 'Shop Now',
-      
-      // Errors
-      errorSearchHero: 'Could not find hero:',
-      errorTryAgain: 'Failed to search for hero. Please try again.',
-      errorSelectHeroes: 'Please select two heroes first!',
-      errorGenerateBattle: 'Failed to generate battle. Please try again.',
+      // Game Features
+      guessHeroTitle: 'GUESS THE HERO!',
+      guessHeroDesc: 'Test your knowledge! Try to guess the superhero based on clues.',
+      findMatchTitle: 'FIND YOUR MATCH!',
+      findMatchDesc: 'Discover which superhero matches your personality!'
     }
   },
   fr: {
@@ -95,67 +97,69 @@ const resources = {
       signUp: "S'inscrire",
       continueWith: 'Ou continuer avec',
       alreadyHaveAccount: 'Déjà un compte?',
-      dontHaveAccount: "Pas encore de compte?",
+      needAccount: "Besoin d'un compte?",
       
       // Main Content
       searchHero: 'Rechercher un super-héros...',
-      search: 'CHERCHER!',
-      guessHero: 'DEVINEZ LE HÉROS!',
-      battleArena: 'ARÈNE DE COMBAT!',
-      findMatch: 'TROUVEZ VOTRE MATCH!',
+      search: 'RECHERCHER!',
+      guessHero: 'DEVINE LE HÉROS!',
+      battleArena: "L'ARÈNE DE COMBAT!",
+      findMatch: 'TROUVE TON MATCH!',
       searching: 'RECHERCHE DANS LE MULTIVERS...',
       
       // Battle Arena
       searchHero1: 'Rechercher héros 1...',
       searchHero2: 'Rechercher héros 2...',
-      startBattle: 'Commencer le Combat!',
-      battleInProgress: 'Combat en Cours...',
-      newBattle: 'Nouveau Combat',
+      startBattle: 'Commencer le combat!',
+      battleInProgress: 'Combat en cours...',
+      newBattle: 'Nouveau combat',
       close: 'Fermer',
       
-      // Media Hub
-      didYouKnow: 'Le Saviez-Vous?',
-      firstAppearance: 'Première Apparition',
-      secretIdentity: 'Identité Secrète',
+      // Hero Details
+      biography: 'Biographie',
+      fullName: 'Nom complet',
+      alterEgos: 'Autres identités',
+      birthplace: 'Lieu de naissance',
+      firstAppearance: 'Première apparition',
+      publisher: 'Éditeur',
+      alignment: 'Alignement',
+      
+      // Power Stats
       powerStats: 'Statistiques',
-      physicalTraits: 'Traits Physiques',
-      occupation: 'Occupation',
-      connections: 'Connexions',
+      intelligence: 'Intelligence',
+      strength: 'Force',
+      speed: 'Vitesse',
+      durability: 'Endurance',
+      power: 'Puissance',
+      combat: 'Combat',
+      
+      // Appearance
+      appearance: 'Apparence',
+      gender: 'Genre',
+      race: 'Race',
       height: 'Taille',
       weight: 'Poids',
-      eyeColor: 'Couleur des Yeux',
-      hairColor: 'Couleur des Cheveux',
+      eyeColor: 'Couleur des yeux',
+      hairColor: 'Couleur des cheveux',
+      
+      // Work & Connections
+      work: 'Travail',
+      occupation: 'Occupation',
       base: 'Base',
-      groupAffiliation: "Affiliation",
+      connections: 'Connexions',
+      groupAffiliation: "Affiliation de groupe",
       relatives: 'Parents',
+      
+      // Common
       unknown: 'Inconnu',
-      unknownOccupation: 'Occupation inconnue',
-      unknownLocation: 'Lieu inconnu',
-      noneKnown: 'Aucun connu',
-      noKnownAlterEgos: "pas d'alter ego connu",
-      strongestAttribute: 'Attribut le plus fort',
-      powerLevel: 'Niveau de Puissance',
+      none: 'Aucun',
+      noInformation: 'Aucune information disponible',
       
-      // Movies & Shows
-      moviesAndShows: 'Films & Séries',
-      release: 'Sortie',
-      watchOn: 'Regarder sur',
-      buyOn: 'Acheter sur',
-      
-      // Comics
-      comics: 'Bandes Dessinées',
-      publisher: 'Éditeur',
-      
-      // Merchandise
-      merchandise: 'Produits Dérivés',
-      availableAt: 'Disponible chez',
-      shopNow: 'Acheter',
-      
-      // Errors
-      errorSearchHero: 'Impossible de trouver le héros:',
-      errorTryAgain: 'Échec de la recherche. Veuillez réessayer.',
-      errorSelectHeroes: "Veuillez d'abord sélectionner deux héros!",
-      errorGenerateBattle: 'Échec de la génération du combat. Veuillez réessayer.',
+      // Game Features
+      guessHeroTitle: 'DEVINE LE HÉROS!',
+      guessHeroDesc: 'Testez vos connaissances! Essayez de deviner le super-héros à partir des indices.',
+      findMatchTitle: 'TROUVE TON MATCH!',
+      findMatchDesc: 'Découvrez quel super-héros correspond à votre personnalité!'
     }
   }
 };
