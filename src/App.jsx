@@ -54,7 +54,7 @@ function App() {
 
     try {
       const response = await axios.get(
-        `https://superheroapi.com/api.php/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
+        `https://superheroapi.com/api/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
       );
 
       if (response.data.response === 'success') {

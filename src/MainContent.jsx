@@ -9,7 +9,6 @@ const MainContent = ({
   loading,
   error,
   handleSearch,
-  handleKeyPress,
   handleSelectHero,
   toggleFavorite,
   favorites,
@@ -28,7 +27,7 @@ const MainContent = ({
     setShowingHome(true);
     handleSearch(e);
   };
-  
+
   return (
     <div className="min-h-screen bg-[url('/background.jpg')] bg-cover bg-center bg-fixed pt-24">
       <div className="container mx-auto px-4 py-24">
@@ -42,12 +41,6 @@ const MainContent = ({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleSearchSubmit(e);
-                  }
-                }}
                 placeholder={t('searchHero')}
                 className="flex-1 px-6 py-3 rounded-lg text-xl font-bangers bg-white/90 border-4 border-black focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                 style={{ letterSpacing: '1px' }}
@@ -146,9 +139,9 @@ const MainContent = ({
 
         {/* No Results Message */}
         {!loading && !error && heroes.length === 0 && showingHome && (
-          <div className="text-center py-8">
+          <div className="text-center mt-8">
             <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
-              {t('noHeroes')}
+              {t('searchMessage')}
             </p>
           </div>
         )}
