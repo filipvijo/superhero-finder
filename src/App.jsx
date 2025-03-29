@@ -11,6 +11,8 @@ import GuessHero from './components/GuessHero';
 import BattleArena from './components/BattleArena';
 import PersonalityQuiz from './components/PersonalityQuiz';
 import UserProfile from './components/UserProfile';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
 
 const MainContent = lazy(() => import('./MainContent'));
 
@@ -103,75 +105,78 @@ function App() {
     : heroes;
 
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
-        <Navigation 
-          showFavorites={showFavorites}
-          setShowFavorites={setShowFavorites}
-          showCollection={showCollection}
-          setShowCollection={setShowCollection}
-          setShowingHome={setShowingHome}
-        />
-        <Suspense fallback={
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-16 w-16 border-8 border-white border-t-transparent"></div>
-          </div>
-        }>
-          <div className="app-container">
-            <UserProfile />
-            <MainContent 
-              query={query}
-              setQuery={setQuery}
-              heroes={displayedHeroes}
-              loading={loading}
-              error={error}
-              handleSearch={handleSearch}
-              handleKeyPress={handleKeyPress}
-              handleSelectHero={setSelectedHero}
-              toggleFavorite={toggleFavorite}
-              favorites={favorites}
-              setShowGuessHero={setShowGuessHero}
-              setShowBattle={setShowBattle}
-              setShowPersonalityQuiz={setShowPersonalityQuiz}
-              showingHome={showingHome}
-              showFavorites={showFavorites}
-              showCollection={showCollection}
-            />
-          </div>
-        </Suspense>
+    <I18nextProvider i18n={i18n}>
+      <AuthProvider>
+        <div className="min-h-screen bg-[url('/background.jpg')] bg-cover bg-center bg-fixed">
+          <Navigation 
+            showingHome={showingHome}
+            setShowingHome={setShowingHome}
+            showFavorites={showFavorites}
+            setShowFavorites={setShowFavorites}
+            showCollection={showCollection}
+            setShowCollection={setShowCollection}
+          />
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="animate-spin rounded-full h-16 w-16 border-8 border-white border-t-transparent"></div>
+            </div>
+          }>
+            <div className="app-container">
+              <UserProfile />
+              <MainContent 
+                query={query}
+                setQuery={setQuery}
+                heroes={displayedHeroes}
+                loading={loading}
+                error={error}
+                handleSearch={handleSearch}
+                handleKeyPress={handleKeyPress}
+                handleSelectHero={setSelectedHero}
+                toggleFavorite={toggleFavorite}
+                favorites={favorites}
+                setShowGuessHero={setShowGuessHero}
+                setShowBattle={setShowBattle}
+                setShowPersonalityQuiz={setShowPersonalityQuiz}
+                showingHome={showingHome}
+                showFavorites={showFavorites}
+                showCollection={showCollection}
+              />
+            </div>
+          </Suspense>
 
-        <AnimatePresence>
-          {selectedHero && (
-            <HeroDetails
-              hero={selectedHero}
-              onClose={() => setSelectedHero(null)}
-              isFavorite={favorites.some(f => f.id === selectedHero.id)}
-              toggleFavorite={toggleFavorite}
-              isUnlocked={unlockedHeroes.some(h => h.id === selectedHero.id)}
-              addToCollection={addToCollection}
-            />
-          )}
-          {showGuessHero && (
-            <GuessHero
-              onClose={() => setShowGuessHero(false)}
-              addToCollection={addToCollection}
-            />
-          )}
-          {showBattle && (
-            <BattleArena
-              onClose={() => setShowBattle(false)}
-              addToCollection={addToCollection}
-            />
-          )}
-          {showPersonalityQuiz && (
-            <PersonalityQuiz
-              onClose={() => setShowPersonalityQuiz(false)}
-              addToCollection={addToCollection}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-    </AuthProvider>
+          <AnimatePresence>
+            {selectedHero && (
+              <HeroDetails
+                hero={selectedHero}
+                onClose={() => setSelectedHero(null)}
+                isFavorite={favorites.some(f => f.id === selectedHero.id)}
+                toggleFavorite={toggleFavorite}
+                isUnlocked={unlockedHeroes.some(h => h.id === selectedHero.id)}
+                addToCollection={addToCollection}
+              />
+            )}
+            {showGuessHero && (
+              <GuessHero
+                onClose={() => setShowGuessHero(false)}
+                addToCollection={addToCollection}
+              />
+            )}
+            {showBattle && (
+              <BattleArena
+                onClose={() => setShowBattle(false)}
+                addToCollection={addToCollection}
+              />
+            )}
+            {showPersonalityQuiz && (
+              <PersonalityQuiz
+                onClose={() => setShowPersonalityQuiz(false)}
+                addToCollection={addToCollection}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+      </AuthProvider>
+    </I18nextProvider>
   );
 }
 
