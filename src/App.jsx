@@ -53,9 +53,7 @@ function App() {
     setError(null);
 
     try {
-      const response = await axios.get(
-        `/api/api/${import.meta.env.VITE_SUPERHERO_API_KEY}/search/${query}`
-      );
+      const response = await axios.get(`/api/search?query=${encodeURIComponent(query)}`);
 
       if (response.data.response === 'success') {
         setHeroes(response.data.results);
