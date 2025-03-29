@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const BattleArena = ({ onClose }) => {
+  const { t, i18n } = useTranslation();
   const [hero1, setHero1] = useState(null);
   const [hero2, setHero2] = useState(null);
   const [searchQuery1, setSearchQuery1] = useState('');
@@ -37,7 +39,7 @@ const BattleArena = ({ onClose }) => {
 
   const startBattle = async () => {
     if (!hero1 || !hero2) {
-      setError('Please select two heroes first!');
+      setError(t('errorSelectHeroes'));
       return;
     }
 
@@ -45,7 +47,7 @@ const BattleArena = ({ onClose }) => {
     setError(null);
 
     try {
-      const prompt = `Create an exciting battle narrative between ${hero1.name} and ${hero2.name}. Consider their stats:
+      const prompt = `Create an exciting battle narrative between ${hero1.name} and ${hero2.name} in ${i18n.language === 'fr' ? 'French' : 'English'}. Consider their stats:
 
 ${hero1.name}:
 - Intelligence: ${hero1.powerstats.intelligence}
@@ -63,7 +65,7 @@ ${hero2.name}:
 - Power: ${hero2.powerstats.power}
 - Combat: ${hero2.powerstats.combat}
 
-Create a dramatic battle story (about 150 words) with a clear winner based on their stats. Make it exciting and comic book style!`;
+Create a dramatic battle story (about 150 words) with a clear winner based on their stats. Make it exciting and comic book style! ${i18n.language === 'fr' ? 'Write the response in French.' : ''}`;
 
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
@@ -91,7 +93,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
       setBattleResult(response.data.choices[0].message.content);
     } catch (err) {
       console.error('Error generating battle:', err);
-      setError('Failed to generate battle. Please try again.');
+      setError(t('errorGenerateBattle'));
     }
 
     setLoading(false);
@@ -124,14 +126,14 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-2xl sm:text-3xl font-bangers text-center mb-6" style={{ letterSpacing: '2px' }}>
-          BATTLE ARENA!
+          {t('battleArena')}
         </h2>
 
         {loading ? (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-8 border-red-500 border-t-transparent"></div>
             <p className="mt-4 text-xl sm:text-2xl font-bangers text-red-500" style={{ letterSpacing: '1px' }}>
-              BATTLE IN PROGRESS...
+              {t('battleInProgress')}
             </p>
           </div>
         ) : battleResult ? (
@@ -178,14 +180,14 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                 className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all text-sm sm:text-base"
                 style={{ letterSpacing: '1px' }}
               >
-                NEW BATTLE
+                {t('newBattle')}
               </button>
               <button
                 onClick={onClose}
                 className="px-4 sm:px-6 py-2 sm:py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all text-sm sm:text-base"
                 style={{ letterSpacing: '1px' }}
               >
-                CLOSE
+                {t('close')}
               </button>
             </div>
           </div>
@@ -200,7 +202,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                     value={searchQuery1}
                     onChange={(e) => setSearchQuery1(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && searchHeroes(searchQuery1, setSearchResults1)}
-                    placeholder="Search hero 1..."
+                    placeholder={t('searchHero1')}
                     className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:border-blue-500"
                   />
                   <button
@@ -208,7 +210,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                     className="px-4 py-2 bg-blue-500 text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-sm"
                     style={{ letterSpacing: '1px' }}
                   >
-                    SEARCH
+                    {t('search')}
                   </button>
                 </div>
 
@@ -265,7 +267,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                     value={searchQuery2}
                     onChange={(e) => setSearchQuery2(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && searchHeroes(searchQuery2, setSearchResults2)}
-                    placeholder="Search hero 2..."
+                    placeholder={t('searchHero2')}
                     className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:border-blue-500"
                   />
                   <button
@@ -273,7 +275,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                     className="px-4 py-2 bg-blue-500 text-white font-bangers rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all text-sm"
                     style={{ letterSpacing: '1px' }}
                   >
-                    SEARCH
+                    {t('search')}
                   </button>
                 </div>
 
@@ -334,7 +336,7 @@ Create a dramatic battle story (about 150 words) with a clear winner based on th
                 className="px-6 py-3 bg-red-500 text-white font-bangers rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
                 style={{ letterSpacing: '1px' }}
               >
-                START BATTLE!
+                {t('startBattle')}
               </button>
             </div>
           </div>
