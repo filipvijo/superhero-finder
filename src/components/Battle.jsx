@@ -16,7 +16,7 @@ const Battle = ({ heroes, onClose }) => {
       const prompt = `Create an exciting and dramatic battle scenario between ${hero1.name} and ${hero2.name}. Consider their powers (${hero1.name}: ${Object.entries(hero1.powerstats).map(([key, value]) => `${key}: ${value}`).join(', ')}) and (${hero2.name}: ${Object.entries(hero2.powerstats).map(([key, value]) => `${key}: ${value}`).join(', ')}). Write a brief, engaging story (2-3 sentences) about how the battle unfolds and who wins. Make it epic and comic book style!`;
 
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',

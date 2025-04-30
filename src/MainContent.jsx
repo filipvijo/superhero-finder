@@ -8,7 +8,6 @@ const MainContent = ({
   heroes,
   loading,
   error,
-  handleSearch,
   handleSelectHero,
   toggleFavorite,
   favorites,
@@ -18,13 +17,15 @@ const MainContent = ({
   showingHome,
   showFavorites,
   showCollection,
-  setShowingHome
+  setShowingHome,
+  handleSearch
 }) => {
   const { t } = useTranslation();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setShowingHome(true);
+    // Call the App.jsx handleSearch function with the event
     handleSearch(e);
   };
 
@@ -96,49 +97,21 @@ const MainContent = ({
           <div className="text-center text-red-500 font-bold">{error}</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {heroes.map((hero) => (
-              <motion.div
+            {/* Use the heroes passed as props from App.jsx */}
+            {heroes && heroes.map((hero) => (
+              <HeroCard
                 key={hero.id}
-                layoutId={`hero-${hero.id}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleSelectHero(hero)}
-                className="bg-black/80 backdrop-blur-sm rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden cursor-pointer group relative"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(hero);
-                  }}
-                  className="absolute top-2 right-2 z-10 p-1 text-2xl bg-black/50 hover:bg-black/70 rounded-full transition-colors"
-                >
-                  {favorites.some(f => f.id === hero.id) ? '⭐' : '☆'}
-                </motion.button>
-                <div className="relative aspect-[2/3]">
-                  <img
-                    src={hero.image?.url || '/placeholder.jpg'}
-                    alt={hero.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent group-hover:from-black/90 transition-all" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-xl font-bangers text-white mb-1" style={{ letterSpacing: '1px' }}>
-                      {hero.name}
-                    </h3>
-                    <p className="text-sm text-gray-300">
-                      {hero.biography?.publisher || t('unknownPublisher')}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                hero={hero}
+                handleSelectHero={handleSelectHero}
+                toggleFavorite={toggleFavorite}
+                favorites={favorites}
+              />
             ))}
           </div>
         )}
 
         {/* No Results Message */}
-        {!loading && !error && heroes.length === 0 && showingHome && (
+        {!loading && !error && heroes && heroes.length === 0 && showingHome && (
           <div className="text-center mt-8">
             <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
               {t('searchMessage')}
@@ -147,7 +120,7 @@ const MainContent = ({
         )}
 
         {/* Empty Favorites Message */}
-        {!loading && !error && heroes.length === 0 && showFavorites && (
+        {!loading && !error && heroes && heroes.length === 0 && showFavorites && (
           <div className="text-center py-8">
             <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
               {t('noFavorites')}
@@ -156,7 +129,7 @@ const MainContent = ({
         )}
 
         {/* Empty Collection Message */}
-        {!loading && !error && heroes.length === 0 && showCollection && (
+        {!loading && !error && heroes && heroes.length === 0 && showCollection && (
           <div className="text-center py-8">
             <p className="text-2xl font-bangers text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" style={{ letterSpacing: '1px' }}>
               {t('noCollection')}

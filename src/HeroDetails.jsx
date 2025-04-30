@@ -1,5 +1,8 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import MediaHub from './components/MediaHub';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const HeroDetails = ({ hero, onClose, isFavorite, onFavoriteToggle }) => {
   return (
@@ -18,10 +21,11 @@ const HeroDetails = ({ hero, onClose, isFavorite, onFavoriteToggle }) => {
         onClick={e => e.stopPropagation()}
       >
         <div className="relative">
-          <img
+          <LazyLoadImage
             src={hero.image.url}
             alt={hero.name}
             className="w-full h-64 object-cover object-center"
+            effect="blur"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
             <div className="flex items-center justify-between w-full">

@@ -13,7 +13,7 @@ const DailyChallenge = ({ onClose, onComplete }) => {
   useEffect(() => {
     const lastCompletedDate = localStorage.getItem('lastCompletedChallengeDate');
     const currentDate = new Date().toDateString();
-    
+
     if (lastCompletedDate === currentDate) {
       setCompleted(true);
     }
@@ -36,12 +36,12 @@ const DailyChallenge = ({ onClose, onComplete }) => {
 
       if (response.data.response === 'success') {
         const hero = response.data;
-        
+
         // Generate a challenge question using OpenAI
         const challengeResponse = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4o-mini',
             messages: [
               {
                 role: 'system',
@@ -86,12 +86,12 @@ const DailyChallenge = ({ onClose, onComplete }) => {
     if (userAnswer === challenge.correctAnswer) {
       const currentDate = new Date().toDateString();
       localStorage.setItem('lastCompletedChallengeDate', currentDate);
-      
+
       // Update streak
       const lastCompletedDate = localStorage.getItem('lastCompletedChallengeDate');
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      
+
       if (lastCompletedDate === yesterday.toDateString()) {
         const newStreak = streak + 1;
         setStreak(newStreak);

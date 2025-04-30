@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 
-const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorites }) => {
+const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorites, showCollection, setShowCollection, setShowCombatJournal }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const { currentUser, logout } = useAuth();
+  const { user, logout } = useAuth();
+  console.log('Current user:', user);
   const { t, i18n } = useTranslation();
 
   const handleLogout = async () => {
@@ -22,8 +23,8 @@ const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorit
   };
 
   const handleHomeClick = () => {
-    setShowingHome(true);
-    setShowFavorites(false);
+    // Refresh the page completely
+    window.location.reload();
   };
 
   const handleFavoritesClick = () => {
@@ -34,6 +35,7 @@ const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorit
   const handleCollectionClick = () => {
     setShowingHome(false);
     setShowFavorites(false);
+    setShowCollection(true);
   };
 
   return (
@@ -76,29 +78,19 @@ const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorit
               >
                 {t('collection')}
               </motion.button>
-            </div>
-
-            <div className="flex items-center gap-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleLanguageToggle}
-                className="px-4 py-2 font-bangers text-lg bg-blue-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+                onClick={() => setShowCombatJournal(true)} // Open the journal
+                className="px-4 py-2 font-bangers text-lg bg-green-600 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
                 style={{ letterSpacing: '1px' }}
               >
-                {i18n.language === 'en' ? 'FR' : 'EN'}
+                {t('combatJournalNav')}
               </motion.button>
-              {currentUser ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLogout}
-                  className="px-4 py-2 font-bangers text-lg bg-red-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-                  style={{ letterSpacing: '1px' }}
-                >
-                  {t('logout')}
-                </motion.button>
-              ) : (
+            </div>
+
+            <div className="flex items-center gap-4">
+              {!user && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -151,36 +143,38 @@ const Navigation = ({ showingHome, setShowingHome, showFavorites, setShowFavorit
             >
               {t('collection')}
             </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLanguageToggle}
-              className="px-4 py-2 font-bangers text-lg bg-blue-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-              style={{ letterSpacing: '1px' }}
-            >
-              {i18n.language === 'en' ? 'FR' : 'EN'}
-            </motion.button>
-            {currentUser ? (
+            <div className="flex gap-2">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleLogout}
-                className="px-4 py-2 font-bangers text-lg bg-red-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+                onClick={handleLanguageToggle}
+                className="px-4 py-2 font-bangers text-lg bg-blue-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
                 style={{ letterSpacing: '1px' }}
               >
-                {t('logout')}
+                {i18n.language === 'en' ? 'FR' : 'EN'}
               </motion.button>
-            ) : (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAuthModal(true)}
-                className="px-4 py-2 font-bangers text-lg bg-green-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-                style={{ letterSpacing: '1px' }}
-              >
-                {t('signIn')}
-              </motion.button>
-            )}
+              {user ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout}
+                  className="px-4 py-2 font-bangers text-lg bg-red-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  style={{ letterSpacing: '1px' }}
+                >
+                  {t('logout')}
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAuthModal(true)}
+                  className="px-4 py-2 font-bangers text-lg bg-green-500 text-white rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  style={{ letterSpacing: '1px' }}
+                >
+                  {t('signIn')}
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
       </nav>

@@ -13,8 +13,65 @@ import PersonalityQuiz from './components/PersonalityQuiz';
 import UserProfile from './components/UserProfile';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
+import CombatJournal from './components/CombatJournal';
+import Collection from './components/Collection';
 
 const MainContent = lazy(() => import('./MainContent'));
+
+// Custom Hook for Favorites
+function useFavorites() {
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (hero) => {
+    console.log('Toggling favorite for:', hero.name);
+    setFavorites(prevFavorites => {
+      const isFavorite = prevFavorites.some(f => f.id === hero.id);
+      if (isFavorite) {
+        return prevFavorites.filter(f => f.id !== hero.id);
+      } else {
+        return [...prevFavorites, hero];
+      }
+    });
+  };
+
+  return [favorites, toggleFavorite];
+}
+
+// Custom Hook for Unlocked Heroes (Collection)
+function useUnlockedHeroes() {
+  const [unlockedHeroes, setUnlockedHeroes] = useState(() => {
+    const saved = localStorage.getItem('unlockedHeroes');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('unlockedHeroes', JSON.stringify(unlockedHeroes));
+  }, [unlockedHeroes]);
+
+  const addToCollection = (hero, source = 'unknown') => {
+    console.log('Adding to collection:', hero.name, 'from source:', source);
+    setUnlockedHeroes(prev => {
+      if (!prev.some(h => h.id === hero.id)) {
+        // Add the hero with source information
+        const heroWithSource = {
+          ...hero,
+          source: source // Track where this hero came from
+        };
+        return [...prev, heroWithSource];
+      }
+      return prev;
+    });
+  };
+
+  return [unlockedHeroes, addToCollection];
+}
 
 function App() {
   const [query, setQuery] = useState('');
@@ -22,28 +79,15 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedHero, setSelectedHero] = useState(null);
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem('favorites');
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [unlockedHeroes, setUnlockedHeroes] = useState(() => {
-    const saved = localStorage.getItem('unlockedHeroes');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [favorites, toggleFavorite] = useFavorites();
+  const [unlockedHeroes, addToCollection] = useUnlockedHeroes();
   const [showGuessHero, setShowGuessHero] = useState(false);
   const [showBattle, setShowBattle] = useState(false);
   const [showPersonalityQuiz, setShowPersonalityQuiz] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
   const [showingHome, setShowingHome] = useState(true);
-
-  useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  }, [favorites]);
-
-  useEffect(() => {
-    localStorage.setItem('unlockedHeroes', JSON.stringify(unlockedHeroes));
-  }, [unlockedHeroes]);
+  const [showCombatJournal, setShowCombatJournal] = useState(false); // Add this state
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -56,13 +100,19 @@ function App() {
       const response = await axios.get(`/api/search?query=${encodeURIComponent(query)}`);
 
       if (response.data.response === 'success') {
-        setHeroes(response.data.results);
+        if (response.data.results) {
+          setHeroes(response.data.results);
+        } else {
+          setError(i18n.t('noHeroes'));
+          setHeroes([]);
+        }
       } else {
-        setError(i18n.t('noHeroes'));
+        console.error('API returned an error:', response.data); // Log the API error
+        setError(i18n.t('searchError'));
         setHeroes([]);
       }
     } catch (err) {
-      console.error('Error fetching heroes:', err);
+      console.error('Error fetching heroes:', err); // Log the network or other error
       setError(i18n.t('searchError'));
       setHeroes([]);
     }
@@ -76,43 +126,24 @@ function App() {
     }
   };
 
-  const toggleFavorite = (hero) => {
-    setFavorites(prevFavorites => {
-      const isFavorite = prevFavorites.some(f => f.id === hero.id);
-      if (isFavorite) {
-        return prevFavorites.filter(f => f.id !== hero.id);
-      } else {
-        return [...prevFavorites, hero];
-      }
-    });
-  };
-
-  const addToCollection = (hero) => {
-    setUnlockedHeroes(prev => {
-      if (!prev.some(h => h.id === hero.id)) {
-        return [...prev, hero];
-      }
-      return prev;
-    });
-  };
-
-  const displayedHeroes = showFavorites 
-    ? favorites 
-    : showCollection 
-    ? unlockedHeroes 
+  const displayedHeroes = showFavorites
+    ? favorites
+    : showCollection
+    ? unlockedHeroes
     : heroes;
 
   return (
     <I18nextProvider i18n={i18n}>
       <AuthProvider>
         <div className="min-h-screen bg-[url('/background.jpg')] bg-cover bg-center bg-fixed">
-          <Navigation 
+          <Navigation
             showingHome={showingHome}
             setShowingHome={setShowingHome}
             showFavorites={showFavorites}
             setShowFavorites={setShowFavorites}
             showCollection={showCollection}
             setShowCollection={setShowCollection}
+            setShowCombatJournal={setShowCombatJournal} // Pass the setter to Navigation
           />
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-screen">
@@ -121,7 +152,7 @@ function App() {
           }>
             <div className="app-container">
               <UserProfile />
-              <MainContent 
+              <MainContent
                 query={query}
                 setQuery={setQuery}
                 heroes={displayedHeroes}
@@ -164,12 +195,25 @@ function App() {
               <BattleArena
                 onClose={() => setShowBattle(false)}
                 addToCollection={addToCollection}
+                heroes={heroes}
               />
             )}
             {showPersonalityQuiz && (
               <PersonalityQuiz
                 onClose={() => setShowPersonalityQuiz(false)}
                 addToCollection={addToCollection}
+              />
+            )}
+            {showCombatJournal && (
+              <CombatJournal onClose={() => setShowCombatJournal(false)} />
+            )}
+            {showCollection && (
+              <Collection
+                unlockedHeroes={unlockedHeroes}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                onClose={() => setShowCollection(false)}
+                theme="light"
               />
             )}
           </AnimatePresence>

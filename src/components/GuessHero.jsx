@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import HeroCard from './HeroCard';
+import HeroVictoryCard from './HeroVictoryCard';
 
 const GuessHero = ({ onClose, addToCollection }) => {
   const [hero, setHero] = useState(null);
@@ -13,7 +14,8 @@ const GuessHero = ({ onClose, addToCollection }) => {
   const [error, setError] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [success, setSuccess] = useState(false);
-  const maxAttempts = 3;
+  const [showVictoryCard, setShowVictoryCard] = useState(false);
+  const maxAttempts = 10;
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -50,15 +52,15 @@ const GuessHero = ({ onClose, addToCollection }) => {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4o-mini',
           messages: [
             {
               role: 'system',
-              content: 'You are a comic book expert creating clues for a superhero guessing game. Create 3 clues that hint at the hero\'s identity without directly revealing their name. Make the clues progressively easier, with the last one being quite obvious. Return ONLY a JSON array of 3 strings, nothing else.'
+              content: 'You are a comic book expert creating clues for a superhero guessing game. Create 10 clues that hint at the hero\'s identity without directly revealing their name. Make the clues progressively easier, with the first one being very difficult and the last one being more obvious but still challenging. Return ONLY a JSON array of 10 strings, nothing else.'
             },
             {
               role: 'user',
-              content: `Create 3 clues for ${hero.name} in ${i18n.language === 'fr' ? 'French' : 'English'}. Here's their information:
+              content: `Create 10 clues for ${hero.name} in ${i18n.language === 'fr' ? 'French' : 'English'}. Here's their information:
                 Powers: ${Object.entries(hero.powerstats).map(([key, value]) => `${key}: ${value}`).join(', ')}
                 Biography: ${Object.entries(hero.biography).map(([key, value]) => `${key}: ${value}`).join(', ')}
                 Appearance: ${Object.entries(hero.appearance).map(([key, value]) => `${key}: ${value}`).join(', ')}
@@ -66,7 +68,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
             }
           ],
           temperature: 0.7,
-          max_tokens: 200
+          max_tokens: 1000
         },
         {
           headers: {
@@ -85,7 +87,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
 
       try {
         const cluesArray = JSON.parse(cleanContent);
-        if (!Array.isArray(cluesArray) || cluesArray.length !== 3) {
+        if (!Array.isArray(cluesArray) || cluesArray.length < 5) { // Allow at least 5 clues
           throw new Error('Invalid clues format');
         }
         setClues(cluesArray);
@@ -109,7 +111,8 @@ const GuessHero = ({ onClose, addToCollection }) => {
     if (isCorrect) {
       setSuccess(true);
       setGameOver(true);
-      addToCollection(hero);
+      addToCollection(hero, 'guessHero'); // Specify the source as guessHero
+      setShowVictoryCard(true);
     } else {
       setAttempts(prev => prev + 1);
       if (attempts + 1 >= maxAttempts) {
@@ -128,6 +131,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
     setError(null);
     setGameOver(false);
     setSuccess(false);
+    setShowVictoryCard(false);
     fetchRandomHero();
   };
 
@@ -168,11 +172,18 @@ const GuessHero = ({ onClose, addToCollection }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 overflow-y-auto py-8">
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full mx-4"
-      >
+      {showVictoryCard && success && hero ? (
+        <HeroVictoryCard
+          hero={hero}
+          onClose={onClose}
+          onPlayAgain={handlePlayAgain}
+        />
+      ) : (
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="bg-white p-8 rounded-xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full mx-4"
+        >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bangers" style={{ letterSpacing: '1px' }}>
             {t('guessHeroTitle')}
@@ -193,6 +204,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
                   key={index}
                   className="p-4 bg-yellow-100 rounded-lg border-2 border-black"
                 >
+                  <div className="font-bold mb-1">{t('question')} {index + 1}/{clues.length}</div>
                   {clue}
                 </div>
               ))}
@@ -207,7 +219,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
                   type="text"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleGuess()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
                   placeholder={t('enterGuess')}
                   className="flex-1 px-4 py-2 border-2 border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 />
@@ -229,7 +241,12 @@ const GuessHero = ({ onClose, addToCollection }) => {
                   {t('correctGuess')}
                 </h3>
                 <div className="mb-4">
-                  <HeroCard hero={hero} />
+                  <HeroCard
+                    hero={hero}
+                    handleSelectHero={() => {}}
+                    toggleFavorite={() => {}}
+                    favorites={[]}
+                  />
                 </div>
               </>
             ) : (
@@ -247,6 +264,7 @@ const GuessHero = ({ onClose, addToCollection }) => {
           </div>
         )}
       </motion.div>
+      )}
     </div>
   );
 };
