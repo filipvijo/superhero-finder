@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { getOptimizedImageUrl, getResponsiveImageSize } from '../utils/imageOptimizer';
+import { getOptimizedImageUrl, getResponsiveImageSize, getAkababImageUrl, getHeroImageUrl } from '../utils/imageOptimizer';
 
 /**
  * Hero search component
@@ -58,10 +58,14 @@ const HeroSearch = ({
         <div className="p-2 border-2 border-green-500 rounded bg-green-50 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
-              src={getOptimizedImageUrl(selectedHero.image.url, { width: imageSize })}
+              src={getHeroImageUrl(selectedHero, { size: 'sm' })}
               alt={selectedHero.name}
               className="w-10 h-10 object-cover rounded"
               loading="lazy"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = getAkababImageUrl(selectedHero, 'sm');
+              }}
             />
             <span className="font-semibold">{selectedHero.name}</span>
           </div>
@@ -90,10 +94,14 @@ const HeroSearch = ({
               onKeyDown={(e) => e.key === 'Enter' && onSelectHero(hero)}
             >
               <img
-                src={getOptimizedImageUrl(hero.image?.url || '/placeholder.jpg', { width: imageSize / 2 })}
+                src={getHeroImageUrl(hero, { size: 'sm' })}
                 alt={hero.name}
                 className="w-8 h-8 object-cover rounded"
                 loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = getAkababImageUrl(hero, 'sm');
+                }}
               />
               <span>{hero.name}</span>
             </div>

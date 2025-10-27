@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { getHeroImageUrl, getAkababImageUrl } from '../utils/imageOptimizer';
 import 'react-lazy-load-image-component/src/effects/blur.css'; // Optional: Import default blur effect
 
 const HeroCard = React.memo(({ hero, handleSelectHero, toggleFavorite, favorites }) => {
@@ -30,10 +31,14 @@ const HeroCard = React.memo(({ hero, handleSelectHero, toggleFavorite, favorites
       </motion.button>
       <div className="relative aspect-[2/3]">
         <LazyLoadImage
-          src={hero.image?.url || '/placeholder.jpg'}
+          src={getHeroImageUrl(hero)}
           alt={hero.name}
           className="w-full h-full object-cover"
           effect="blur" // Optional: Apply blur effect during loading
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = getAkababImageUrl(hero);
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent group-hover:from-black/90 transition-all" />
         <div className="absolute bottom-0 left-0 right-0 p-4">

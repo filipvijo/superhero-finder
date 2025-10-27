@@ -64,6 +64,49 @@ const PersonalityQuiz = ({ onClose, addToCollection }) => {
   const [showUnlockCard, setShowUnlockCard] = useState(false);
   const { t, i18n } = useTranslation();
 
+  // Try to resolve a canonical hero from the Superhero API by name
+  const resolveHeroFromAPI = async (name) => {
+    try {
+      if (!name) return null;
+      const resp = await axios.get(`/api/search?query=${encodeURIComponent(name)}`);
+      if (resp?.data?.response === 'success' && Array.isArray(resp.data.results)) {
+        // Prefer exact name match; fall back to first result
+        const exact = resp.data.results.find(h => (h.name || '').toLowerCase() === name.toLowerCase());
+        return exact || resp.data.results[0] || null;
+      }
+    } catch (e) {
+      console.error('resolveHeroFromAPI error:', e);
+    }
+    return null;
+  };
+
+  // Build hero card-compatible object, preferring canonical API data for stable IDs/images
+  const buildHeroData = async ({ name, image_url, publisher, powers = [], reason = '' }) => {
+    // Try fetch from API to obtain numeric id and official image
+    const apiHero = await resolveHeroFromAPI(name);
+    if (apiHero) {
+      return {
+        id: apiHero.id,
+        name: apiHero.name,
+        image: { url: apiHero.image?.url || image_url || '' },
+        biography: { publisher: apiHero.biography?.publisher || publisher || 'Unknown' },
+        powerstats: apiHero.powerstats || {},
+        powers,
+        reason,
+      };
+    }
+    // Fallback if API resolution fails
+    return {
+      id: Date.now().toString(),
+      name,
+      image: { url: image_url || '' },
+      biography: { publisher: publisher || 'Unknown' },
+      powerstats: {},
+      powers,
+      reason,
+    };
+  };
+
   // Expanded question pool
   const allQuestions = [
     // Original questions
@@ -221,16 +264,14 @@ const PersonalityQuiz = ({ onClose, addToCollection }) => {
         const content = response.data.choices[0].message.content;
         const match = JSON.parse(content);
 
-        // Create a hero object in the format expected by the HeroCard component
-        const heroData = {
-          id: Date.now().toString(), // Generate a unique ID
+        // Prefer canonical hero from API to get stable id and image
+        const heroData = await buildHeroData({
           name: match.name,
-          image: { url: match.image_url },
-          biography: { publisher: match.publisher || 'Unknown' },
-          powerstats: {},
+          image_url: match.image_url,
+          publisher: match.publisher,
           powers: match.powers || [],
-          reason: match.reason
-        };
+          reason: match.reason,
+        });
 
         setResult(heroData);
 
@@ -273,29 +314,22 @@ const PersonalityQuiz = ({ onClose, addToCollection }) => {
   };
 
   // Helper function to use a fallback hero
-  const useFallbackHero = (finalAnswers) => {
+  const useFallbackHero = async (finalAnswers) => {
     const fallbackHero = getFallbackHero(finalAnswers);
 
-    // Create a hero object in the format expected by the HeroCard component
-    const heroData = {
-      id: Date.now().toString(), // Generate a unique ID
+    buildHeroData({
       name: fallbackHero.name,
-      image: { url: fallbackHero.image_url },
-      biography: { publisher: fallbackHero.publisher || 'Unknown' },
-      powerstats: {},
+      image_url: fallbackHero.image_url,
+      publisher: fallbackHero.publisher,
       powers: fallbackHero.powers || [],
-      reason: fallbackHero.reason
-    };
-
-    setResult(heroData);
-
-    // Add the hero to the collection if addToCollection function is provided
-    if (addToCollection) {
-      addToCollection(heroData, 'personalityQuiz'); // Specify the source as personalityQuiz
-    }
-
-    // Show the unlock card
-    setShowUnlockCard(true);
+      reason: fallbackHero.reason,
+    }).then((heroData) => {
+      setResult(heroData);
+      if (addToCollection) {
+        addToCollection(heroData, 'personalityQuiz');
+      }
+      setShowUnlockCard(true);
+    });
   };
 
   const handlePlayAgain = () => {

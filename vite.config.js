@@ -21,6 +21,12 @@ export default defineConfig(({ mode }) => {
             return `/api/${env.VITE_SUPERHERO_API_KEY}/search/${decodeURIComponent(query)}`;
           },
         },
+        // Dev-time image proxy to local express server (server.cjs)
+        '/api/image-proxy': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/image-proxy/, '/image-proxy'),
+        },
       },
     },
   };

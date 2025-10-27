@@ -12,16 +12,51 @@
  */
 export const getOptimizedImageUrl = (url, { width = 300, quality = 80 } = {}) => {
   if (!url) return '';
-  
-  // Check if URL is from a service that supports image optimization
+
+  // Marvel CDN example (kept for completeness if used later)
   if (url.includes('i.annihil.us')) {
-    // Marvel API images can be optimized with size parameters
-    return `${url}/detail/portrait_${width}x${width * 1.5}.jpg`;
+    return url; // keep original; variants depend on provided path
   }
-  
-  // For other URLs, we could implement a proxy service or use a CDN
-  // For now, just return the original URL
+
+  // For hosts that block hotlinking (e.g., superherodb.com), route through proxy
+  try {
+    const u = new URL(url);
+    const allowedHosts = new Set([
+      'www.superherodb.com',
+      'superherodb.com'
+    ]);
+    if (allowedHosts.has(u.hostname)) {
+      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    }
+  } catch (_) {
+    // If URL constructor fails, fall back to original
+  }
+
   return url;
+};
+
+// Build a slug from a hero name for Akabab dataset URLs
+export const toSlug = (name = '') =>
+  name
+    .toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+
+// Construct Akabab dataset image URL as a fallback
+export const getAkababImageUrl = (hero, size = 'md') => {
+  if (!hero || !hero.id || !hero.name) return '';
+  const slug = toSlug(hero.name);
+  return `https://akabab.github.io/superhero-api/api/images/${size}/${hero.id}-${slug}.jpg`;
+};
+
+// Prefer official image URL (proxied when needed); callers can use onError to swap to Akabab
+export const getHeroImageUrl = (hero, { size = 'md' } = {}) => {
+  if (!hero) return '';
+  const primary = getOptimizedImageUrl(hero.image?.url || '');
+  if (primary) return primary;
+  return getAkababImageUrl(hero, size);
 };
 
 /**

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { getOptimizedImageUrl, getResponsiveImageSize } from '../utils/imageOptimizer';
+import { getHeroImageUrl, getResponsiveImageSize, getAkababImageUrl } from '../utils/imageOptimizer';
 
 /**
  * Component to display battle results
@@ -26,10 +26,14 @@ const BattleResult = ({ fightText, fightImage, winnerHero, onNewBattle }) => {
         >
           <div className="bg-white p-2 rounded">
             <img
-              src={getOptimizedImageUrl(winnerHero.image.url, { width: imageSize * 1.5, quality: 90 })}
+              src={getHeroImageUrl(winnerHero, { size: 'md' })}
               alt={winnerHero.name}
               className="w-32 h-48 object-cover rounded mx-auto mb-2"
               loading="lazy"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = getAkababImageUrl(winnerHero, 'md');
+              }}
             />
             <p className="font-bangers text-xl text-center">
               {t('winner')}: {winnerHero.name}

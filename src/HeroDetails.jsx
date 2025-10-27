@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import MediaHub from './components/MediaHub';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { getHeroImageUrl, getAkababImageUrl } from './utils/imageOptimizer';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const HeroDetails = ({ hero, onClose, isFavorite, onFavoriteToggle }) => {
@@ -22,10 +23,14 @@ const HeroDetails = ({ hero, onClose, isFavorite, onFavoriteToggle }) => {
       >
         <div className="relative">
           <LazyLoadImage
-            src={hero.image.url}
+            src={getHeroImageUrl(hero, { size: 'lg' })}
             alt={hero.name}
             className="w-full h-64 object-cover object-center"
             effect="blur"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = getAkababImageUrl(hero, 'lg');
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
             <div className="flex items-center justify-between w-full">

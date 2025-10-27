@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import confetti from 'canvas-confetti';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { getHeroImageUrl, getAkababImageUrl } from '../utils/imageOptimizer';
 
 /**
  * Component to display when a user correctly guesses a hero
@@ -101,10 +102,14 @@ const HeroVictoryCard = ({ hero, onClose, onPlayAgain }) => {
           <div className="absolute inset-0 bg-green-500 opacity-20 z-0"></div>
           <div className="relative aspect-[2/3] z-10">
             <LazyLoadImage
-              src={hero.image?.url || '/placeholder.jpg'}
+              src={getHeroImageUrl(hero)}
               alt={hero.name}
               className="w-full h-full object-cover"
               effect="blur"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = getAkababImageUrl(hero);
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-4">
